@@ -11,7 +11,7 @@ export default function AboutPage() {
   const [experiences, setExperiences] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("/api/settings").then(r=>r.json()).then(data => setSettings(data || {}));
+    fetch(`/api/settings?t=${Date.now()}`).then(r=>r.json()).then(data => setSettings(data || {}));
     fetch("/api/stats").then(r=>r.json()).then(data => setStats(Array.isArray(data) ? data : []));
     fetch("/api/skills").then(r=>r.json()).then(data => setSkills(Array.isArray(data) ? data : []));
     fetch("/api/experiences").then(r=>r.json()).then(data => setExperiences(Array.isArray(data) ? data : []));
