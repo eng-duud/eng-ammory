@@ -8,8 +8,21 @@ export default function AdminSettings() {
   const [saving, setSaving]     = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
 
+  const loadSettings = async () => {
+    try {
+      // Fetch from admin API to ensure we get the latest even if public is cached
+      const r = await fetch("/api/admin/settings");
+      const d = await r.json();
+      if (r.ok) setSettings(d || {});
+    } catch (e) {
+      console.error("Failed to load settings", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    fetch("/api/settings").then(r=>r.json()).then(d=>{setSettings(d||{});setLoading(false);});
+    loadSettings();
   }, []);
 
   const fields = [
@@ -40,18 +53,31 @@ export default function AdminSettings() {
     try { 
       const url = await uploadToCloudinary(file); 
       setSettings(s=>({...s,profileImage:url})); 
+    } catch (e) {
+      alert("فشل رفع الصورة!");
+    } finally { 
+      setUploadingImage(false); 
     }
-    finally { setUploadingImage(false); }
   };
 
   const save = async () => {
     setSaving(true);
     try {
-      await fetch("/api/admin/settings",{
-        method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(settings)
+      const res = await fetch("/api/admin/settings",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(settings)
       });
+      if (!res.ok) throw new Error("Failed to save");
+      
       alert("تم الحفظ بنجاح!");
-    } catch { alert("حدث خطأ!"); } finally { setSaving(false); }
+      // Re-load settings from server to ensure state is in sync
+      await loadSettings();
+    } catch (e) { 
+      alert("حدث خطأ أثناء الحفظ!"); 
+    } finally { 
+      setSaving(false); 
+    }
   };
 
   return (
