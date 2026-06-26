@@ -93,23 +93,23 @@ export default function WorksPage() {
                         </p>
 	                        <div className="flex items-center justify-between">
 	                          <div className="flex flex-wrap gap-1.5">
-	                            {(Array.isArray(project.tech)?project.tech:[]).slice(0,3).map((t:any)=>(
-	                              <span key={typeof t==="string"?t:t.name}
+	                            {(Array.isArray(project?.tech) ? project.tech : []).slice(0, 3).map((t: any, idx: number) => (
+	                              <span key={typeof t === "string" ? t : (t?.name || idx)}
 	                                className="text-xs font-dm px-2 py-0.5 rounded"
 	                                style={{color:"var(--text-muted)",background:"var(--bg-300)"}}>
-	                                {typeof t==="string"?t:t.name}
+	                                {typeof t === "string" ? t : t?.name}
 	                              </span>
 	                            ))}
 	                          </div>
 	                          <div className="flex items-center gap-2">
-	                            {project.githubUrl && (
+	                            {project?.githubUrl && (
 	                              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" 
 	                                onClick={(e) => e.stopPropagation()}
 	                                className="text-muted-foreground hover:text-gold transition-colors" title="Source Code">
 	                                <Github size={14} />
 	                              </a>
 	                            )}
-	                            {project.liveUrl && (
+	                            {project?.liveUrl && (
 	                              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" 
 	                                onClick={(e) => e.stopPropagation()}
 	                                className="text-muted-foreground hover:text-gold transition-colors" title="Live Demo">
