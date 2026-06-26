@@ -4,7 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-<<<<<<< HEAD
 /* ─── DARK THEME (default) ─── */
 :root,
 [data-theme="dark"] {
@@ -125,66 +124,11 @@ body {
 /* ─── GOLD TEXT ─── */
 .gold-text {
   background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold-dark) 100%);
-=======
-:root {
-  --gold: #C9A96E;
-  --gold-light: #E2C898;
-  --gold-dark: #A07840;
-  --dark: #0D0D0D;
-  --dark-100: #1A1A1A;
-  --dark-200: #242424;
-  --dark-300: #2E2E2E;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-html {
-  scroll-behavior: smooth;
-  background: #0D0D0D;
-}
-
-body {
-  background: #0D0D0D;
-  color: #ffffff;
-  font-family: 'DM Sans', sans-serif;
-  overflow-x: hidden;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: #0D0D0D; }
-::-webkit-scrollbar-thumb { background: #C9A96E; border-radius: 2px; }
-
-/* Glass effect */
-.glass {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(201, 169, 110, 0.1);
-}
-
-.glass-hover {
-  transition: all 0.3s ease;
-}
-.glass-hover:hover {
-  background: rgba(201, 169, 110, 0.05);
-  border-color: rgba(201, 169, 110, 0.3);
-}
-
-/* Gold gradient text */
-.gold-text {
-  background: linear-gradient(135deg, #C9A96E 0%, #E2C898 50%, #A07840 100%);
->>>>>>> b02e648661871825b90e109e7ccda5ce53cbf953
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-<<<<<<< HEAD
 .gold-shimmer {
   background: linear-gradient(90deg,
     var(--gold) 0%,
@@ -193,11 +137,6 @@ body {
     var(--gold-dark) 75%,
     var(--gold) 100%
   );
-=======
-/* Gold shimmer */
-.gold-shimmer {
-  background: linear-gradient(90deg, #C9A96E 0%, #E2C898 25%, #C9A96E 50%, #A07840 75%, #C9A96E 100%);
->>>>>>> b02e648661871825b90e109e7ccda5ce53cbf953
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -206,7 +145,6 @@ body {
 }
 
 @keyframes shimmer {
-<<<<<<< HEAD
   0%   { background-position: 0% center; }
   100% { background-position: 200% center; }
 }
@@ -223,51 +161,6 @@ body {
 .content-layer { position: relative; z-index: 1; }
 
 /* ─── TYPOGRAPHY ─── */
-=======
-  0% { background-position: 0% center; }
-  100% { background-position: 200% center; }
-}
-
-/* Section padding */
-.section-pad {
-  padding: 120px 0;
-}
-
-@media (max-width: 768px) {
-  .section-pad { padding: 80px 0; }
-}
-
-/* Gold line separator */
-.gold-line {
-  width: 60px;
-  height: 2px;
-  background: linear-gradient(90deg, #C9A96E, transparent);
-}
-
-/* Canvas background */
-#three-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.content-layer {
-  position: relative;
-  z-index: 1;
-}
-
-/* Custom selection */
-::selection {
-  background: rgba(201, 169, 110, 0.3);
-  color: #E2C898;
-}
-
-/* Heading styles */
->>>>>>> b02e648661871825b90e109e7ccda5ce53cbf953
 .display-xl {
   font-family: 'Playfair Display', serif;
   font-size: clamp(3rem, 8vw, 7rem);
@@ -275,27 +168,20 @@ body {
   line-height: 1;
   letter-spacing: -0.02em;
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> b02e648661871825b90e109e7ccda5ce53cbf953
 .display-lg {
   font-family: 'Playfair Display', serif;
   font-size: clamp(2.5rem, 5vw, 4.5rem);
   font-weight: 700;
   line-height: 1.1;
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> b02e648661871825b90e109e7ccda5ce53cbf953
 .display-md {
   font-family: 'Playfair Display', serif;
   font-size: clamp(1.8rem, 3vw, 3rem);
   font-weight: 600;
 }
 
-<<<<<<< HEAD
 /* ─── SECTION PAD ─── */
 .section-pad { padding: 120px 0; }
 @media (max-width: 768px) { .section-pad { padding: 80px 0; } }
@@ -326,8 +212,6 @@ body {
   transition: width 0.3s ease;
 }
 .hover-gold:hover::after { width: 100%; }
-
-/* ─── PROJECT CARD ─── */
 
 /* ─── FILTER TABS ─── */
 .filter-tab {
@@ -377,99 +261,18 @@ body {
   flex-shrink: 0;
 }
 
-/* ─── BACKGROUND TRANSITION ─── */
-[data-theme="light"] body {
-  background: var(--bg);
-  color: var(--text);
-}
-
-/* ─── LIGHT MODE SPECIFIC OVERRIDES ─── */
-[data-theme="light"] .glass {
-  box-shadow: 0 2px 20px rgba(0,0,0,0.06);
-}
-
-[data-theme="light"] #three-canvas {
-  opacity: 0.65;
-}
-
-/* In light mode make 3D pop more with contrast filter */
-[data-theme="light"] #three-canvas {
-  filter: contrast(1.1) saturate(1.2);
-}
-
 /* ─── ANIMATED BORDER ─── */
 .border-animated { position: relative; }
-=======
-/* Hover underline gold */
-.hover-gold {
-  position: relative;
-}
-.hover-gold::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: #C9A96E;
-  transition: width 0.3s ease;
-}
-.hover-gold:hover::after {
-  width: 100%;
-}
-
-/* RTL support */
-[dir="rtl"] {
-  font-family: 'DM Sans', 'Arial', sans-serif;
-}
-
-/* Project card depth */
-.project-card {
-  transform-style: preserve-3d;
-  perspective: 1000px;
-}
-
-.project-card:hover {
-  transform: translateY(-8px);
-}
-
-/* Noise texture overlay */
-.noise::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  opacity: 0.04;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Animated border */
-@keyframes borderRotate {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.border-animated {
-  position: relative;
-}
->>>>>>> b02e648661871825b90e109e7ccda5ce53cbf953
 .border-animated::before {
   content: '';
   position: absolute;
   inset: -1px;
-<<<<<<< HEAD
   background: linear-gradient(90deg, transparent, var(--gold), transparent);
-=======
-  background: linear-gradient(90deg, transparent, #C9A96E, transparent);
->>>>>>> b02e648661871825b90e109e7ccda5ce53cbf953
   background-size: 200% 100%;
   animation: borderRotate 3s linear infinite;
   border-radius: inherit;
   z-index: -1;
 }
-<<<<<<< HEAD
 @keyframes borderRotate {
   0%   { background-position: 0% 50%; }
   50%  { background-position: 100% 50%; }
@@ -486,156 +289,7 @@ body {
 [data-theme="light"] .bg-alt { background: var(--bg-100); }
 [data-theme="dark"]  .bg-alt { background: #0A0A0A; }
 
-/* ─── FORM INPUTS ─────────────────────────────────────── */
-.input-gold {
-  @apply px-4 py-2.5 rounded-lg border font-dm text-sm transition-all;
-  background: var(--glass-bg);
-  color: var(--text);
-  border-color: var(--glass-border);
+/* RTL support */
+[dir="rtl"] {
+  font-family: 'DM Sans', 'Arial', sans-serif;
 }
-
-.input-gold:focus {
-  outline: none;
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px var(--gold-glow);
-}
-
-.input-gold::placeholder {
-  color: var(--text-faint);
-}
-
-/* ─── FILTER TAB ──────────────────────────────────────── */
-.filter-tab {
-  @apply px-5 py-2.5 text-sm font-dm rounded-lg transition-all;
-  color: var(--text-faint);
-  border: 1px solid var(--glass-border);
-}
-
-.filter-tab:hover {
-  background: var(--gold-subtle);
-  color: var(--gold);
-  border-color: var(--gold);
-}
-
-.filter-tab.active {
-  background: var(--gold);
-  color: var(--bg);
-  border-color: var(--gold);
-}
-
-/* ─── HOVER GOLD ──────────────────────────────────────── */
-.hover-gold:hover {
-  color: var(--gold);
-}
-
-/* ─── GLOW DOT ────────────────────────────────────────── */
-.glow-dot {
-  @apply w-2 h-2 rounded-full;
-  background: var(--gold);
-  box-shadow: 0 0 8px var(--gold-glow);
-}
-
-/* ─── PROJECT CARD ────────────────────────────────────── */
-
-/* ─── CONTENT LAYER (for z-index layering) ───────────── */
-.content-layer {
-  position: relative;
-  z-index: 1;
-}
-
-/* ─── DISPLAY SIZES ───────────────────────────────────── */
-.display-xl {
-  @apply text-6xl md:text-7xl font-playfair font-bold leading-tight;
-}
-
-.display-lg {
-  @apply text-5xl md:text-6xl font-playfair font-bold leading-tight;
-}
-
-.display-md {
-  @apply text-4xl md:text-5xl font-playfair font-bold leading-tight;
-}
-
-/* ─── SECTION PADDING ─────────────────────────────────── */
-.section-pad {
-  @apply py-24 md:py-32;
-}
-
-.bg-alt {
-  background: var(--bg-alt);
-}
-
-/* ─── GLASS UTILITIES ─────────────────────────────────── */
-.glass {
-  @apply transition-all duration-300;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(12px);
-}
-
-.glass-hover:hover {
-  background: var(--glass-bg-hover);
-  border-color: var(--gold-subtle);
-  box-shadow: 0 8px 32px var(--gold-glow);
-}
-
-/* ─── LINE CLAMP ──────────────────────────────────────── */
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-=======
-
-/* Glowing dot */
-.glow-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #C9A96E;
-  box-shadow: 0 0 10px #C9A96E, 0 0 20px rgba(201,169,110,0.5);
-}
-
-/* Stagger animations */
-.stagger-item {
-  opacity: 0;
-  transform: translateY(30px);
-}
-
-/* Filter tabs */
-.filter-tab {
-  padding: 8px 24px;
-  border-radius: 100px;
-  border: 1px solid rgba(201,169,110,0.2);
-  color: #888;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.875rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-.filter-tab:hover, .filter-tab.active {
-  background: rgba(201,169,110,0.1);
-  border-color: #C9A96E;
-  color: #C9A96E;
-}
-
-/* Input styles */
-.input-gold {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(201,169,110,0.2);
-  color: #fff;
-  padding: 16px 20px;
-  border-radius: 8px;
-  width: 100%;
-  outline: none;
-  font-family: 'DM Sans', sans-serif;
-  transition: border-color 0.3s ease;
-}
-.input-gold:focus {
-  border-color: #C9A96E;
-  box-shadow: 0 0 0 3px rgba(201,169,110,0.1);
-}
-.input-gold::placeholder { color: #555; }
->>>>>>> b02e648661871825b90e109e7ccda5ce53cbf953
