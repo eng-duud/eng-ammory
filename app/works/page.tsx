@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Github, Globe } from "lucide-react";
 
 export default function WorksPage() {
   const [projects, setProjects]     = useState<any[]>([]);
@@ -91,15 +91,33 @@ export default function WorksPage() {
                         <p className="font-dm text-sm leading-relaxed mb-4 line-clamp-2" style={{color:"var(--text-faint)"}}>
                           {project.description}
                         </p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {(Array.isArray(project.tech)?project.tech:[]).slice(0,3).map((t:any)=>(
-                            <span key={typeof t==="string"?t:t.name}
-                              className="text-xs font-dm px-2 py-0.5 rounded"
-                              style={{color:"var(--text-muted)",background:"var(--bg-300)"}}>
-                              {typeof t==="string"?t:t.name}
-                            </span>
-                          ))}
-                        </div>
+	                        <div className="flex items-center justify-between">
+	                          <div className="flex flex-wrap gap-1.5">
+	                            {(Array.isArray(project.tech)?project.tech:[]).slice(0,3).map((t:any)=>(
+	                              <span key={typeof t==="string"?t:t.name}
+	                                className="text-xs font-dm px-2 py-0.5 rounded"
+	                                style={{color:"var(--text-muted)",background:"var(--bg-300)"}}>
+	                                {typeof t==="string"?t:t.name}
+	                              </span>
+	                            ))}
+	                          </div>
+	                          <div className="flex items-center gap-2">
+	                            {project.githubUrl && (
+	                              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" 
+	                                onClick={(e) => e.stopPropagation()}
+	                                className="text-muted-foreground hover:text-gold transition-colors" title="Source Code">
+	                                <Github size={14} />
+	                              </a>
+	                            )}
+	                            {project.liveUrl && (
+	                              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" 
+	                                onClick={(e) => e.stopPropagation()}
+	                                className="text-muted-foreground hover:text-gold transition-colors" title="Live Demo">
+	                                <Globe size={14} />
+	                              </a>
+	                            )}
+	                          </div>
+	                        </div>
                       </div>
                     </div>
                   </Link>

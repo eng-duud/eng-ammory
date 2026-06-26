@@ -8,6 +8,7 @@ export default function AdminSettings() {
   const [saving, setSaving]     = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingCV, setUploadingCV] = useState(false);
+  const [cvFile, setCvFile] = useState<File | null>(null);
 
   const loadSettings = async () => {
     try {
@@ -97,15 +98,15 @@ export default function AdminSettings() {
       alert("يرجى رفع ملف PDF أو Word فقط");
       return;
     }
+    
     setUploadingCV(true);
     try { 
-      // Delete old CV first if it exists
-      if (settings.cvUrl) {
-        await deleteOldCVFromCloudinary(settings.cvUrl);
-      }
-      
       const url = await uploadFileToCloudinary(file); 
-      setSettings(s=>({...s,cvUrl:url})); 
+      setSettings(s => ({
+        ...s, 
+        cvUrl: url,
+        cvName: file.name 
+      })); 
     } catch (e) {
       alert("فشل رفع الملف!");
     } finally { 
@@ -168,37 +169,60 @@ export default function AdminSettings() {
             </div>
           </div>
 
-          {/* CV Section */}
-          <div className="glass rounded-2xl p-6">
-            <h2 className="font-playfair text-xl mb-6" style={{color:"var(--text)"}}>السيرة الذاتية</h2>
-            <div className="space-y-4">
-              {settings.cvUrl ? (
-                <div className="flex items-center justify-between p-4 rounded-lg border" style={{borderColor:"var(--glass-border)",background:"var(--glass-bg)"}}>
-                  <div className="flex items-center gap-3">
-                    <FileUp size={24} style={{color:"var(--gold)"}}/>
-                    <div>
-                      <p className="font-dm text-sm" style={{color:"var(--text)"}}>ملف السيرة الذاتية</p>
-                      <p className="font-dm text-xs" style={{color:"var(--text-faint)"}}>تم الرفع بنجاح</p>
-                    </div>
-                  </div>
-                  <button onClick={async ()=>{
-                    await deleteOldCVFromCloudinary(settings.cvUrl);
-                    setSettings(s=>({...s,cvUrl:""}));
-                  }}
-                    className="w-7 h-7 rounded-full flex items-center justify-center"
-                    style={{background:"rgba(0,0,0,0.7)",color:"white"}}>
-                    <X size={14}/>
-                  </button>
-                </div>
-              ) : (
-                <label className="flex flex-col items-center justify-center w-full p-8 rounded-xl border-2 border-dashed cursor-pointer transition-colors"
-                  style={{borderColor:"var(--glass-border)",color:"var(--text-faint)"}}>
-                  {uploadingCV ? <Loader size={32} className="animate-spin"/> : <><FileUp size={40} className="mb-2"/><span className="font-dm text-sm">اضغط لرفع السيرة الذاتية (PDF أو Word)</span></>}
-                  <input type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={handleCVUpload} disabled={uploadingCV}/>
-                </label>
-              )}
-            </div>
-          </div>
+	          {/* CV Section */}
+	          <div className="glass rounded-2xl p-6">
+	            <h2 className="font-playfair text-xl mb-6" style={{color:"var(--text)"}}>السيرة الذاتية</h2>
+	            <div className="space-y-4">
+	              {settings.cvUrl ? (
+	                <div className="flex items-center justify-between p-4 rounded-lg border" style={{borderColor:"var(--glass-border)",background:"var(--glass-bg)"}}>
+	                  <div className="flex items-center gap-3 overflow-hidden">
+	                    <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{background:"var(--bg-300)"}}>
+	                      <FileUp size={20} style={{color:"var(--gold)"}}/>
+	                    </div>
+	                    <div className="overflow-hidden">
+	                      <p className="font-dm text-sm truncate" style={{color:"var(--text)"}} title={settings.cvName || "ملف السيرة الذاتية"}>
+	                        {settings.cvName || "ملف السيرة الذاتية"}
+	                      </p>
+	                      <p className="font-dm text-xs" style={{color:"var(--gold)"}}>تم الرفع بنجاح</p>
+	                    </div>
+	                  </div>
+	                  <div className="flex items-center gap-2">
+	                    <button onClick={async ()=>{
+	                      if (confirm("هل أنت متأكد من حذف السيرة الذاتية؟")) {
+	                        await deleteOldCVFromCloudinary(settings.cvUrl);
+	                        setSettings(s=>{
+	                          const newSettings = {...s};
+	                          delete newSettings.cvUrl;
+	                          delete newSettings.cvName;
+	                          return newSettings;
+	                        });
+	                      }
+	                    }}
+	                      className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors hover:bg-red-500/20 text-red-500"
+	                      title="إلغاء الرفع / حذف">
+	                      <X size={18}/>
+	                    </button>
+	                  </div>
+	                </div>
+	              ) : (
+	                <label className="flex flex-col items-center justify-center w-full p-8 rounded-xl border-2 border-dashed cursor-pointer transition-colors hover:border-gold/50"
+	                  style={{borderColor:"var(--glass-border)",color:"var(--text-faint)"}}>
+	                  {uploadingCV ? (
+	                    <div className="flex flex-col items-center">
+	                      <Loader size={32} className="animate-spin mb-2" style={{color:"var(--gold)"}}/>
+	                      <span className="font-dm text-sm">جاري الرفع...</span>
+	                    </div>
+	                  ) : (
+	                    <>
+	                      <FileUp size={40} className="mb-2" style={{color:"var(--gold-subtle)"}}/>
+	                      <span className="font-dm text-sm">اضغط لرفع السيرة الذاتية (PDF أو Word)</span>
+	                    </>
+	                  )}
+	                  <input type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={handleCVUpload} disabled={uploadingCV}/>
+	                </label>
+	              )}
+	            </div>
+	          </div>
 
           {/* Profile Information Section */}
           <div className="glass rounded-2xl p-6">

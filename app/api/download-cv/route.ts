@@ -37,7 +37,7 @@ export async function GET() {
     // Return the file with proper headers for direct download
     return new NextResponse(buffer, {
       headers: {
-        "Content-Type": "application/octet-stream",
+        "Content-Type": "application/pdf", // Set correct type for PDF
         "Content-Disposition": `attachment; filename="${filename}"`,
         "Cache-Control": "no-cache, no-store, must-revalidate",
       },

@@ -140,12 +140,20 @@ export default function ProjectForm({ projectId }: Props) {
               {categories.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </div>
-          <div>
-            <label className={lbl} style={{color:"var(--text-faint)"}}>السنة</label>
-            <input className={inp} value={form.year} onChange={e=>setForm(f=>({...f,year:e.target.value}))} placeholder="2024"/>
-          </div>
-        </div>
-      </div>
+	          <div>
+	            <label className={lbl} style={{color:"var(--text-faint)"}}>السنة</label>
+	            <input className={inp} value={form.year} onChange={e=>setForm(f=>({...f,year:e.target.value}))} placeholder="2024"/>
+	          </div>
+	          <div>
+	            <label className={lbl} style={{color:"var(--text-faint)"}}>رابط المشروع (Live)</label>
+	            <input className={inp} value={form.liveUrl} onChange={e=>setForm(f=>({...f,liveUrl:e.target.value}))} placeholder="https://example.com"/>
+	          </div>
+	          <div>
+	            <label className={lbl} style={{color:"var(--text-faint)"}}>رابط المصدر (GitHub)</label>
+	            <input className={inp} value={form.githubUrl} onChange={e=>setForm(f=>({...f,githubUrl:e.target.value}))} placeholder="https://github.com/..."/>
+	          </div>
+	        </div>
+	      </div>
 
       <div className="glass rounded-2xl p-6">
         <h2 className="font-playfair text-xl mb-6" style={{color:"var(--text)"}}>صورة الغلاف</h2>

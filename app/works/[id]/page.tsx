@@ -58,38 +58,38 @@ export default function ProjectDetailPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{duration:.8}}>
               <div className="flex items-center gap-3 mb-6">
-                <span className="text-xs font-dm uppercase tracking-widest border px-3 py-1 rounded-full"
-                  style={{color:"var(--gold)",borderColor:"var(--glass-border)"}}>{project.category_name}</span>
-                {project.year && <span className="text-xs font-dm" style={{color:"var(--text-faint)"}}>{project.year}</span>}
-              </div>
-              <h1 className="display-lg mb-6" style={{color:"var(--text)"}}>{project.title}</h1>
-              <p className="font-dm leading-relaxed text-lg mb-8" style={{color:"var(--text-muted)"}}>
-                {project.description_long || project.description}
-              </p>
-              <div className="flex flex-wrap gap-3">
-                {project.live_url && (
-                  <a href={project.live_url} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-6 py-3 font-dm font-semibold rounded-lg transition-all"
-                    style={{background:"var(--gold)",color:"var(--bg)"}}>
-                    <ExternalLink size={15}/> المشروع الحي
-                  </a>
-                )}
-                {project.github_url && (
-                  <a href={project.github_url} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-6 py-3 font-dm rounded-lg transition-all"
-                    style={{border:"1px solid var(--glass-border)",color:"var(--gold)"}}>
-                    <Globe size={15}/> الكود المصدري
-                  </a>
-                )}
-              </div>
+	                <span className="text-xs font-dm uppercase tracking-widest border px-3 py-1 rounded-full"
+	                  style={{color:"var(--gold)",borderColor:"var(--glass-border)"}}>{project.category?.name || project.category_name}</span>
+	                {project.year && <span className="text-xs font-dm" style={{color:"var(--text-faint)"}}>{project.year}</span>}
+	              </div>
+	              <h1 className="display-lg mb-6" style={{color:"var(--text)"}}>{project.title}</h1>
+	              <p className="font-dm leading-relaxed text-lg mb-8" style={{color:"var(--text-muted)"}}>
+	                {project.descriptionLong || project.description_long || project.description}
+	              </p>
+	              <div className="flex flex-wrap gap-3">
+	                {(project.liveUrl || project.live_url) && (
+	                  <a href={project.liveUrl || project.live_url} target="_blank" rel="noopener noreferrer"
+	                    className="flex items-center gap-2 px-6 py-3 font-dm font-semibold rounded-lg transition-all"
+	                    style={{background:"var(--gold)",color:"var(--bg)"}}>
+	                    <ExternalLink size={15}/> المشروع الحي
+	                  </a>
+	                )}
+	                {(project.githubUrl || project.github_url) && (
+	                  <a href={project.githubUrl || project.github_url} target="_blank" rel="noopener noreferrer"
+	                    className="flex items-center gap-2 px-6 py-3 font-dm rounded-lg transition-all"
+	                    style={{border:"1px solid var(--glass-border)",color:"var(--gold)"}}>
+	                    <Github size={15}/> الكود المصدري
+	                  </a>
+	                )}
+	              </div>
             </motion.div>
 
             <motion.div initial={{opacity:0,scale:.9}} animate={{opacity:1,scale:1}} transition={{duration:1}}>
               <div className="aspect-video rounded-2xl relative overflow-hidden border"
                 style={{background:`linear-gradient(135deg,${project.color} 0%,var(--bg) 100%)`,borderColor:"var(--bg-300)"}}>
-                {project.cover_image ? (
-                  <img src={project.cover_image} alt={project.title} className="w-full h-full object-cover"/>
-                ) : (
+	                {(project.coverImage || project.cover_image) ? (
+	                  <img src={project.coverImage || project.cover_image} alt={project.title} className="w-full h-full object-cover"/>
+	                ) : (
                   <>
                     <div className="absolute top-0 left-0 right-0 h-8 flex items-center px-4 gap-2"
                       style={{background:"rgba(0,0,0,0.4)"}}>
@@ -161,13 +161,13 @@ export default function ProjectDetailPage() {
                 <Link key={p.id} href={`/works/${p.slug}`} className="group">
                   <div className="glass rounded-2xl overflow-hidden border transition-all duration-500 glass-hover"
                     style={{borderColor:"var(--bg-300)"}}>
-                    <div className="h-40 relative overflow-hidden" style={{background:`linear-gradient(135deg,${p.color} 0%,var(--bg) 100%)`}}>
-                      {p.cover_image && <img src={p.cover_image} alt={p.title} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"/>}
-                    </div>
-                    <div className="p-5">
-                      <h4 className="font-playfair text-lg" style={{color:"var(--text)"}}>{p.title}</h4>
-                      <p className="text-xs font-dm mt-1" style={{color:"var(--text-faint)"}}>{p.category_name}</p>
-                    </div>
+	                    <div className="h-40 relative overflow-hidden" style={{background:`linear-gradient(135deg,${p.color} 0%,var(--bg) 100%)`}}>
+	                      {(p.coverImage || p.cover_image) && <img src={p.coverImage || p.cover_image} alt={p.title} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"/>}
+	                    </div>
+	                    <div className="p-5">
+	                      <h4 className="font-playfair text-lg" style={{color:"var(--text)"}}>{p.title}</h4>
+	                      <p className="text-xs font-dm mt-1" style={{color:"var(--text-faint)"}}>{p.category?.name || p.category_name}</p>
+	                    </div>
                   </div>
                 </Link>
               ))}
