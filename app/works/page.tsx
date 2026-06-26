@@ -10,8 +10,15 @@ export default function WorksPage() {
   const [active, setActive]         = useState("all");
 
   useEffect(() => {
-    fetch("/api/projects").then(r=>r.json()).then(data => setProjects(Array.isArray(data) ? data : []));
-    fetch("/api/categories").then(r=>r.json()).then(data => setCategories(Array.isArray(data) ? data : []));
+    fetch("/api/projects")
+      .then(r => r.ok ? r.json() : [])
+      .then(data => setProjects(Array.isArray(data) ? data : []))
+      .catch(() => setProjects([]));
+      
+    fetch("/api/categories")
+      .then(r => r.ok ? r.json() : [])
+      .then(data => setCategories(Array.isArray(data) ? data : []))
+      .catch(() => setCategories([]));
   }, []);
 
   const filtered = active === "all" ? projects : projects.filter((p:any) => p.category?.slug === active);
@@ -51,25 +58,25 @@ export default function WorksPage() {
                   exit={{opacity:0,scale:.9}} transition={{duration:.45,delay:i*.05}}>
                   <Link href={`/works/${project.slug}`} className="block group project-card">
                     <div className="glass rounded-2xl overflow-hidden h-full transition-all duration-500 glass-hover">
-                      <div className="h-48 relative overflow-hidden"
-                        style={{background:`linear-gradient(135deg,${project.color} 0%,var(--bg) 100%)`}}>
-                        {project.coverImage ? (
-                          <img src={project.coverImage} alt={project.title}
-                            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"/>
-                        ) : (
-                          <div className="absolute inset-0 flex items-center justify-center opacity-25">
-                            <div className="space-y-2 w-4/5">
-                              <div className="h-3 rounded-full w-3/4" style={{background:"rgba(255,255,255,0.4)"}}/>
-                              <div className="h-2 rounded-full w-full" style={{background:"rgba(255,255,255,0.2)"}}/>
-                              <div className="flex gap-2 mt-4">
-                                {[.4,.2,.3].map((o,j)=>(
-                                  <div key={j} className="h-14 flex-1 rounded-lg"
-                                    style={{background:project.accent+Math.round(o*255).toString(16).padStart(2,"0")}}/>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        )}
+	                      <div className="h-48 relative overflow-hidden"
+	                        style={{background:`linear-gradient(135deg,${project?.color || '#1a3a5c'} 0%,var(--bg) 100%)`}}>
+	                        {project?.coverImage ? (
+	                          <img src={project.coverImage} alt={project.title}
+	                            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"/>
+	                        ) : (
+	                          <div className="absolute inset-0 flex items-center justify-center opacity-25">
+	                            <div className="space-y-2 w-4/5">
+	                              <div className="h-3 rounded-full w-3/4" style={{background:"rgba(255,255,255,0.4)"}}/>
+	                              <div className="h-2 rounded-full w-full" style={{background:"rgba(255,255,255,0.2)"}}/>
+	                              <div className="flex gap-2 mt-4">
+	                                {[.4,.2,.3].map((o,j)=>(
+	                                  <div key={j} className="h-14 flex-1 rounded-lg"
+	                                    style={{background:(project?.accent || '#4a9eff')+Math.round(o*255).toString(16).padStart(2,"0")}}/>
+	                                ))}
+	                              </div>
+	                            </div>
+	                          </div>
+	                        )}
                         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
                           style={{background:"rgba(0,0,0,0.5)"}}>
                           <span className="w-10 h-10 rounded-lg backdrop-blur-sm flex items-center justify-center text-white"
