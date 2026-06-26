@@ -1,16 +1,35 @@
 import { NextResponse } from "next/server";
-import sql from "@/app/lib/db";
+import prisma from "@/app/lib/db";
 import { requireAdmin } from "@/app/lib/adminGuard";
 
 export async function GET() {
   const guard = await requireAdmin(); if (guard) return guard;
-  return NextResponse.json(await sql`SELECT * FROM experiences ORDER BY "order"`);
+  try {
+    const experiences = await prisma.experience.findMany({
+      orderBy: { order: 'asc' },
+    });
+    return NextResponse.json(experiences);
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
 
 export async function POST(req: Request) {
   const guard = await requireAdmin(); if (guard) return guard;
-  const b = await req.json();
-  const [e] = await sql`INSERT INTO experiences (role,company,period,description,tech,"order")
-    VALUES (${b.role},${b.company},${b.period},${b.description},${b.tech??[]},${b.order??0}) RETURNING *`;
-  return NextResponse.json(e, { status: 201 });
+  try {
+    const b = await req.json();
+    const experience = await prisma.experience.create({
+      data: {
+        role: b.role,
+        company: b.company,
+        period: b.period,
+        description: b.description,
+        tech: b.tech ?? [],
+        order: b.order ?? 0,
+      },
+    });
+    return NextResponse.json(experience, { status: 201 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }

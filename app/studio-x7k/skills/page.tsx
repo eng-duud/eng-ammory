@@ -126,7 +126,7 @@ export default function AdminSkills() {
             <div key={g.id} className="glass rounded-2xl p-6">
               <h3 className="font-playfair text-lg mb-4" style={{color:"var(--text)"}}>{g.name}</h3>
               <div className="space-y-3">
-                {skills.filter(s=>s.group_id===g.id).map(s=>(
+                {skills.filter(s=>s.groupId===g.id).map(s=>(
                   <div key={s.id} className="flex items-center gap-3 p-3 rounded-lg" style={{background:"var(--bg-200)"}}>
                     {editingSkill?.id===s.id ? (
                       <>

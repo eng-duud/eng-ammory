@@ -88,7 +88,7 @@ export default function AdminProjects() {
 
               <div className="w-10 h-10 rounded-lg flex-shrink-0 relative overflow-hidden"
                 style={{background:`linear-gradient(135deg,${p.color},${p.accent})`}}>
-                {p.cover_image && <img src={p.cover_image} alt="" className="w-full h-full object-cover absolute inset-0"/>}
+                {p.coverImage && <img src={p.coverImage} alt="" className="w-full h-full object-cover absolute inset-0"/>}
               </div>
 
               <div className="flex-1 min-w-0">
@@ -98,7 +98,7 @@ export default function AdminProjects() {
                   {p.hidden   && <span className="text-xs font-dm px-2 py-0.5 rounded-full" style={{background:"var(--bg-300)",color:"var(--text-faint)"}}>مخفي</span>}
                 </div>
                 <div className="flex items-center gap-3 mt-1">
-                  <span className="font-dm text-xs" style={{color:"var(--text-faint)"}}>{p.category_name}</span>
+                  <span className="font-dm text-xs" style={{color:"var(--text-faint)"}}>{p.category?.name}</span>
                   {p.year && <span className="font-dm text-xs" style={{color:"var(--text-faint)"}}>{p.year}</span>}
                 </div>
               </div>

@@ -136,7 +136,7 @@ export default function Home() {
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-4">
                           <span className="text-xs font-dm uppercase tracking-widest border px-3 py-1 rounded-full"
-                            style={{color:"var(--gold)",borderColor:"var(--glass-border)"}}>{project.category_name}</span>
+                            style={{color:"var(--gold)",borderColor:"var(--glass-border)"}}>{project.category?.name}</span>
                           <span className="text-xs font-dm" style={{color:"var(--text-faint)"}}>{project.year}</span>
                         </div>
                         <h3 className="font-playfair text-2xl md:text-3xl mb-3 group-hover:text-[var(--gold)] transition-colors"
@@ -173,7 +173,7 @@ export default function Home() {
             <h2 className="display-lg" style={{color:"var(--text)"}}>المهارات والأدوات</h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {skills.map((skill:any,i:number)=>(
+            {skills.flatMap((group: any) => group.skills || []).map((skill: any, i: number) => (
               <motion.div key={skill.id} initial={{opacity:0,scale:.9}} whileInView={{opacity:1,scale:1}}
                 viewport={{once:true}} transition={{delay:i*.05}}
                 className="glass p-6 rounded-2xl text-center group transition-all duration-300">

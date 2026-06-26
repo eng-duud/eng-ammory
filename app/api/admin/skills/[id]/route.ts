@@ -1,16 +1,34 @@
 import { NextResponse } from "next/server";
-import sql from "@/app/lib/db";
+import prisma from "@/app/lib/db";
 import { requireAdmin } from "@/app/lib/adminGuard";
 
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   const guard = await requireAdmin(); if (guard) return guard;
-  const b = await req.json();
-  const [s] = await sql`UPDATE skills SET name=${b.name},level=${b.level},"order"=${b.order??0},group_id=${b.groupId} WHERE id=${params.id} RETURNING *`;
-  return NextResponse.json(s);
+  try {
+    const b = await req.json();
+    const skill = await prisma.skill.update({
+      where: { id: params.id },
+      data: {
+        name: b.name,
+        level: b.level,
+        order: b.order ?? 0,
+        groupId: b.groupId,
+      },
+    });
+    return NextResponse.json(skill);
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
 
 export async function DELETE(_: Request, { params }: { params: { id: string } }) {
   const guard = await requireAdmin(); if (guard) return guard;
-  await sql`DELETE FROM skills WHERE id=${params.id}`;
-  return NextResponse.json({ ok: true });
+  try {
+    await prisma.skill.delete({
+      where: { id: params.id },
+    });
+    return NextResponse.json({ ok: true });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }

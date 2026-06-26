@@ -1,20 +1,20 @@
 import { NextResponse } from "next/server";
-import sql from "@/app/lib/db";
+import prisma from "@/app/lib/db";
 
 export async function GET() {
   try {
-    const groups = await sql`SELECT * FROM skill_groups ORDER BY "order"`;
-    const skills = await sql`SELECT * FROM skills ORDER BY "order"`;
+    const groups = await prisma.skillGroup.findMany({
+      include: {
+        skills: {
+          orderBy: { order: 'asc' },
+        },
+      },
+      orderBy: { order: 'asc' },
+    });
     
-    // Grouping logic
-    const result = groups.map((g: any) => ({
-      ...g,
-      skills: skills.filter((s: any) => s.group_id === g.id),
-    }));
-    
-    return NextResponse.json(result);
-  } catch (e: any) {
-    console.error("Skills API Error:", e);
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    return NextResponse.json(groups);
+  } catch (error: any) {
+    console.error("Skills API Error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

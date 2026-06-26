@@ -29,12 +29,12 @@ export default function ProjectForm({ projectId }: Props) {
       fetch(`/api/admin/projects/${projectId}`).then(r=>r.json()).then(p=>{
         if (p && !p.error) {
           setForm({
-            title:p.title||"", titleEn:p.title_en||"", description:p.description||"",
-            descriptionLong:p.description_long||"", categoryId:p.category_id||"",
-            liveUrl:p.live_url||"", github_url:p.github_url||"",
+            title:p.title||"", titleEn:p.titleEn||"", description:p.description||"",
+            descriptionLong:p.descriptionLong||"", categoryId:p.categoryId||"",
+            liveUrl:p.liveUrl||"", githubUrl:p.githubUrl||"",
             featured:p.featured||false, hidden:p.hidden||false, order:p.order||0,
             color:p.color||"#1a3a5c", accent:p.accent||"#4a9eff", year:p.year||"",
-            coverImage:p.cover_image||"",
+            coverImage:p.coverImage||"",
             tech:(p.tech||[]).map((t:any)=>typeof t==="string"?t:t.name),
             images:(p.images||[]).map((img:any)=>({id:img.id,url:img.url,alt:img.alt||""})),
           });

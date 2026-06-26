@@ -14,7 +14,7 @@ export default function WorksPage() {
     fetch("/api/categories").then(r=>r.json()).then(setCategories);
   }, []);
 
-  const filtered = active === "all" ? projects : projects.filter((p:any) => p.category_slug === active);
+  const filtered = active === "all" ? projects : projects.filter((p:any) => p.category?.slug === active);
 
   return (
     <>
@@ -53,8 +53,8 @@ export default function WorksPage() {
                     <div className="glass rounded-2xl overflow-hidden h-full transition-all duration-500 glass-hover">
                       <div className="h-48 relative overflow-hidden"
                         style={{background:`linear-gradient(135deg,${project.color} 0%,var(--bg) 100%)`}}>
-                        {project.cover_image ? (
-                          <img src={project.cover_image} alt={project.title}
+                        {project.coverImage ? (
+57	                          <img src={project.coverImage} alt={project.title}
                             className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"/>
                         ) : (
                           <div className="absolute inset-0 flex items-center justify-center opacity-25">
@@ -80,7 +80,7 @@ export default function WorksPage() {
                         <div className="absolute top-4 right-4">
                           <span className="text-xs font-dm px-3 py-1 rounded-full backdrop-blur-sm"
                             style={{color:"rgba(255,255,255,.7)",background:"rgba(0,0,0,.4)",border:"1px solid rgba(255,255,255,.1)"}}>
-                            {project.category_name}
+                            {project.category?.name}
                           </span>
                         </div>
                       </div>

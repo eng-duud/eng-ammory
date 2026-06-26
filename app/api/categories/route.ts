@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
-import sql from "@/app/lib/db";
+import prisma from "@/app/lib/db";
+
 export async function GET() {
-  try { return NextResponse.json(await sql`SELECT * FROM categories ORDER BY "order"`); }
-  catch { return NextResponse.json([]); }
+  try {
+    const categories = await prisma.category.findMany({
+      orderBy: { order: 'asc' },
+    });
+    return NextResponse.json(categories);
+  } catch (error) {
+    return NextResponse.json([]);
+  }
 }

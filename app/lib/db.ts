@@ -1,51 +1,60 @@
-import { neon } from "@neondatabase/serverless";
+import { PrismaClient } from "@prisma/client";
 
-const sql = neon(process.env.DATABASE_URL!);
-export default sql;
+const prismaClientSingleton = () => {
+  return new PrismaClient();
+};
+
+declare global {
+  var prisma: undefined | ReturnType<typeof prismaClientSingleton>;
+}
+
+const prisma = globalThis.prisma ?? prismaClientSingleton();
+
+export default prisma;
+
+if (process.env.NODE_ENV !== "production") globalThis.prisma = prisma;
 
 // ─── typed query helpers ────────────────────────────────────────
 export async function getSettings(): Promise<Record<string, string>> {
-  const rows = await sql`SELECT key, value FROM settings`;
-  return Object.fromEntries(rows.map((r: any) => [r.key, r.value]));
+  const rows = await prisma.setting.findMany();
+  return Object.fromEntries(rows.map((r) => [r.key, r.value]));
 }
 
 export async function getProjects(opts?: { featured?: boolean; hidden?: boolean }) {
-  if (opts?.featured) {
-    return sql`SELECT p.*, c.name as category_name, c.slug as category_slug
-      FROM projects p JOIN categories c ON p.category_id = c.id
-      WHERE p.featured = true AND p.hidden = false
-      ORDER BY p.order ASC`;
-  }
-  if (opts?.hidden === false) {
-    return sql`SELECT p.*, c.name as category_name, c.slug as category_slug
-      FROM projects p JOIN categories c ON p.category_id = c.id
-      WHERE p.hidden = false ORDER BY p.order ASC`;
-  }
-  return sql`SELECT p.*, c.name as category_name, c.slug as category_slug
-    FROM projects p JOIN categories c ON p.category_id = c.id
-    ORDER BY p.order ASC`;
+  return prisma.project.findMany({
+    where: {
+      ...(opts?.featured !== undefined ? { featured: opts.featured } : {}),
+      ...(opts?.hidden !== undefined ? { hidden: opts.hidden } : {}),
+    },
+    include: {
+      category: true,
+      tech: true,
+      images: true,
+    },
+    orderBy: {
+      order: 'asc',
+    },
+  });
 }
 
 export async function getProjectBySlug(slug: string) {
-  const rows = await sql`
-    SELECT p.*, c.name as category_name, c.slug as category_slug
-    FROM projects p JOIN categories c ON p.category_id = c.id
-    WHERE p.slug = ${slug}`;
-  if (!rows[0]) return null;
-  const project = rows[0] as any;
-  project.tech   = await sql`SELECT name FROM project_tech WHERE project_id = ${project.id} ORDER BY id`;
-  project.images = await sql`SELECT * FROM project_images WHERE project_id = ${project.id} ORDER BY "order"`;
-  return project;
+  return prisma.project.findUnique({
+    where: { slug },
+    include: {
+      category: true,
+      tech: true,
+      images: true,
+    },
+  });
 }
 
 export async function getProjectById(id: string) {
-  const rows = await sql`
-    SELECT p.*, c.name as category_name, c.slug as category_slug
-    FROM projects p JOIN categories c ON p.category_id = c.id
-    WHERE p.id = ${id}`;
-  if (!rows[0]) return null;
-  const project = rows[0] as any;
-  project.tech   = await sql`SELECT id, name FROM project_tech WHERE project_id = ${id} ORDER BY id`;
-  project.images = await sql`SELECT * FROM project_images WHERE project_id = ${id} ORDER BY "order"`;
-  return project;
+  return prisma.project.findUnique({
+    where: { id },
+    include: {
+      category: true,
+      tech: true,
+      images: true,
+    },
+  });
 }

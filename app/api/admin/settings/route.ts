@@ -1,19 +1,30 @@
 import { NextResponse } from "next/server";
-import sql from "@/app/lib/db";
+import prisma from "@/app/lib/db";
 import { requireAdmin } from "@/app/lib/adminGuard";
 
 export async function GET() {
   const guard = await requireAdmin(); if (guard) return guard;
-  const rows = await sql`SELECT key,value FROM settings`;
-  return NextResponse.json(Object.fromEntries(rows.map((r:any)=>[r.key,r.value])));
+  try {
+    const rows = await prisma.setting.findMany();
+    return NextResponse.json(Object.fromEntries(rows.map((r) => [r.key, r.value])));
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
 
 export async function POST(req: Request) {
   const guard = await requireAdmin(); if (guard) return guard;
-  const body = await req.json();
-  for (const [key, value] of Object.entries(body)) {
-    await sql`INSERT INTO settings (key,value) VALUES (${key},${value as string})
-              ON CONFLICT (key) DO UPDATE SET value=EXCLUDED.value`;
+  try {
+    const body = await req.json();
+    for (const [key, value] of Object.entries(body)) {
+      await prisma.setting.upsert({
+        where: { key },
+        update: { value: value as string },
+        create: { key, value: value as string },
+      });
+    }
+    return NextResponse.json({ ok: true });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
-  return NextResponse.json({ ok: true });
 }

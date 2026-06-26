@@ -5,7 +5,7 @@ export async function GET() {
   try {
     const settings = await getSettings();
     return NextResponse.json(settings);
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

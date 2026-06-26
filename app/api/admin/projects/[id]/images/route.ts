@@ -1,19 +1,37 @@
 import { NextResponse } from "next/server";
-import sql from "@/app/lib/db";
+import prisma from "@/app/lib/db";
 import { requireAdmin } from "@/app/lib/adminGuard";
 
 export async function POST(req: Request, { params }: { params: { id: string } }) {
   const guard = await requireAdmin(); if (guard) return guard;
-  const { url, alt, order } = await req.json();
-  const [img] = await sql`
-    INSERT INTO project_images (project_id, url, alt, "order")
-    VALUES (${params.id}, ${url}, ${alt||null}, ${order??0}) RETURNING *`;
-  return NextResponse.json(img, { status: 201 });
+  try {
+    const { url, alt, order } = await req.json();
+    const image = await prisma.projectImage.create({
+      data: {
+        projectId: params.id,
+        url,
+        alt: alt || null,
+        order: order ?? 0,
+      },
+    });
+    return NextResponse.json(image, { status: 201 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
 
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   const guard = await requireAdmin(); if (guard) return guard;
-  const { imageId } = await req.json();
-  await sql`DELETE FROM project_images WHERE id=${imageId} AND project_id=${params.id}`;
-  return NextResponse.json({ ok: true });
+  try {
+    const { imageId } = await req.json();
+    await prisma.projectImage.delete({
+      where: { 
+        id: imageId,
+        projectId: params.id
+      },
+    });
+    return NextResponse.json({ ok: true });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }

@@ -87,7 +87,7 @@ export default function AdminMessages() {
                   </div>
                   {m.subject && <div className="font-dm text-sm mb-2" style={{color:"var(--text)"}}>{m.subject}</div>}
                   <p className="font-dm text-sm leading-relaxed mb-3" style={{color:"var(--text-muted)"}}>{m.message}</p>
-                  <div className="font-dm text-xs" style={{color:"var(--text-faint)"}}>{new Date(m.created_at).toLocaleDateString("ar-SA")}</div>
+                  <div className="font-dm text-xs" style={{color:"var(--text-faint)"}}>{new Date(m.createdAt).toLocaleDateString("ar-SA")}</div>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <button onClick={()=>toggleRead(m.id,m.read)} title={m.read?"وضع علامة غير مقروء":"وضع علامة مقروء"}
