@@ -68,10 +68,17 @@ export default function AboutPage() {
                   </div>
                 ):null)}
               </div>
-              <a href="#" className="inline-flex items-center gap-2 px-6 py-3 text-sm font-dm rounded-lg transition-all"
-                style={{border:"1px solid var(--glass-border)",color:"var(--gold)"}}>
-                <Download size={15}/> تحميل السيرة الذاتية
-              </a>
+              {settings?.cvUrl ? (
+                <a href={settings.cvUrl} download className="inline-flex items-center gap-2 px-6 py-3 text-sm font-dm rounded-lg transition-all hover:opacity-80"
+                  style={{border:"1px solid var(--glass-border)",color:"var(--gold)"}}>
+                  <Download size={15}/> تحميل السيرة الذاتية
+                </a>
+              ) : (
+                <button disabled className="inline-flex items-center gap-2 px-6 py-3 text-sm font-dm rounded-lg transition-all opacity-50 cursor-not-allowed"
+                  style={{border:"1px solid var(--glass-border)",color:"var(--gold)"}}>
+                  <Download size={15}/> السيرة الذاتية غير متوفرة
+                </button>
+              )}
             </motion.div>
 
             <motion.div initial={{opacity:0,x:40}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:.8}}>

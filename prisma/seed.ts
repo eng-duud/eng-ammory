@@ -174,6 +174,7 @@ async function main() {
     { key: 'twitter', value: '#' },
     { key: 'whatsapp', value: '#' },
     { key: 'profileImage', value: '' },
+    { key: 'cvUrl', value: '' },
   ];
 
   for (const setting of settingsData) {
