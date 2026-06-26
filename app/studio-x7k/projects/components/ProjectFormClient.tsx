@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Upload, X, Plus, ImagePlus, Loader } from "lucide-react";
+import { X, Plus, ImagePlus, Loader } from "lucide-react";
 
 interface Props { projectId?: string; }
 
@@ -25,13 +25,13 @@ export default function ProjectForm({ projectId }: Props) {
 
   useEffect(() => {
     fetch("/api/categories").then(r=>r.json()).then(setCategories);
-    if (isEdit) {
+    if (isEdit && projectId) {
       fetch(`/api/admin/projects/${projectId}`).then(r=>r.json()).then(p=>{
         if (p && !p.error) {
           setForm({
             title:p.title||"", titleEn:p.title_en||"", description:p.description||"",
             descriptionLong:p.description_long||"", categoryId:p.category_id||"",
-            liveUrl:p.live_url||"", githubUrl:p.github_url||"",
+            liveUrl:p.live_url||"", github_url:p.github_url||"",
             featured:p.featured||false, hidden:p.hidden||false, order:p.order||0,
             color:p.color||"#1a3a5c", accent:p.accent||"#4a9eff", year:p.year||"",
             coverImage:p.cover_image||"",
@@ -41,7 +41,7 @@ export default function ProjectForm({ projectId }: Props) {
         }
       });
     }
-  }, [projectId]);
+  }, [projectId, isEdit]);
 
   const uploadToCloudinary = async (file: File): Promise<string> => {
     const fd = new FormData();
@@ -95,7 +95,7 @@ export default function ProjectForm({ projectId }: Props) {
         }
       }
       router.push("/studio-x7k/projects");
-    } catch (e:any) { alert(e.message); } finally { setSaving(false); }
+    } catch (e: any) { alert(e instanceof Error ? e.message : "An error occurred"); } finally { setSaving(false); }
   };
 
   const removeImage = async (idx:number) => {

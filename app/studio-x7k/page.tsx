@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { FolderOpen, MessageSquare, Eye, EyeOff, Star } from "lucide-react";
+import { FolderOpen, MessageSquare, EyeOff, Star } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminDashboard() {
