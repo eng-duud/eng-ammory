@@ -6,7 +6,7 @@ export async function GET() {
   const guard = await requireAdmin(); if (guard) return guard;
   const rows = await sql`
     SELECT p.*, c.name as category_name, c.slug as category_slug,
-      COALESCE((SELECT json_agg(pt.name) FROM project_tech pt WHERE pt.project_id=p.id),\'[]\') as tech
+      COALESCE((SELECT json_agg(pt.name) FROM project_tech pt WHERE pt.project_id=p.id),'[]') as tech
     FROM projects p JOIN categories c ON p.category_id=c.id ORDER BY p.order`;
   return NextResponse.json(rows);
 }
@@ -27,8 +27,8 @@ export async function POST(req: Request) {
     featured: b.featured ?? false,
     hidden: b.hidden ?? false,
     order: b.order ?? 0,
-    color: b.color || \'#1a3a5c\',
-    accent: b.accent || \'#4a9eff\',
+    color: b.color || '#1a3a5c',
+    accent: b.accent || '#4a9eff',
     year: b.year || null,
     cover_image: b.coverImage || null,
   };
