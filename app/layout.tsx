@@ -36,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider>
           <KeyboardUniverse />
           <Header />
-          <main className="content-layer relative z-10">{children}</main>
+          <main className="content-layer relative z-10 pointer-events-none"><div className="pointer-events-auto">{children}</div></main>
           <Footer />
         </ThemeProvider>
       </body>
