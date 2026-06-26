@@ -103,24 +103,37 @@ export default function Header() {
           ${scrolled ? "py-3 border-b border-[var(--glass-border)]" : "py-5"}
         `}
       >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-	          <Link href="/" className="group flex items-center gap-3">
-	            <div
-	              className="w-10 h-10 rounded-lg flex items-center justify-center relative overflow-hidden transition-all duration-300"
-	              style={{ border: "1px solid var(--glass-border)", background: "linear-gradient(135deg, var(--gold-subtle), transparent)" }}
-	            >
-	              <span className="text-sm font-bold text-[var(--gold)]">A</span>
-	            </div>
-	            <div>
-	              <div
-	                className="font-playfair font-semibold text-sm leading-tight"
-	                style={{ color: "var(--text)" }}
-	              >عمرو الجمل</div>
-	              <div className="text-xs font-dm" style={{ color: "var(--gold)" }}>Developer</div>
-	            </div>
-	          </Link>
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between flex-row-reverse">
+          {/* Right: Profile Image + Name */}
+          <Link href="/" className="group flex items-center gap-3 flex-row-reverse">
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center relative overflow-hidden transition-all duration-300 border border-[var(--glass-border)]"
+            >
+              {profileImage ? (
+                <img 
+                  src={profileImage} 
+                  alt="Profile" 
+                  className="w-full h-full object-cover"
+                  loading="eager"
+                />
+              ) : (
+                <div
+                  className="absolute inset-0"
+                  style={{ background: "linear-gradient(135deg, var(--gold-subtle), transparent)" }}
+                />
+              )}
+            </div>
+            <div className="text-right">
+              <div
+                className="font-playfair font-semibold text-sm leading-tight"
+                style={{ color: "var(--text)" }}
+              >عمرو الجمل</div>
+              <div className="text-xs font-dm" style={{ color: "var(--gold)" }}>Developer</div>
+            </div>
+          </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
+          {/* Center: Desktop Navigation (Optional, keeping it for desktop experience) */}
+          <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map(link => (
               <Link
                 key={link.href}
@@ -140,36 +153,23 @@ export default function Header() {
             ))}
           </nav>
 
-	          <div className="hidden md:flex items-center gap-4">
-	            {profileImage && (
-	              <div className="w-10 h-10 rounded-full overflow-hidden border border-[var(--glass-border)]">
-	                <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
-	              </div>
-	            )}
-	            <ThemeToggle />
-	            <Link
-	              href="/contact"
-	              className="px-5 py-2 text-sm font-dm font-medium rounded-lg border border-[var(--glass-border)] hover:bg-[var(--gold-subtle)] transition-colors duration-200"
-	              style={{ color: "var(--gold)" }}
-	            >
-	              للتواصل
-	            </Link>
-	          </div>
-
-	          <div className="md:hidden flex items-center gap-3">
-	            {profileImage && (
-	              <div className="w-10 h-10 rounded-full overflow-hidden border border-[var(--glass-border)]">
-	                <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
-	              </div>
-	            )}
-	            <ThemeToggle />
-	            <button
-	              onClick={() => setMobileOpen(!mobileOpen)}
-	              className="w-10 h-10 flex items-center justify-center rounded-lg border border-[var(--glass-border)] text-[var(--gold)]"
-	            >
-	              {mobileOpen ? "✕" : "☰"}
-	            </button>
-	          </div>
+          {/* Left: Theme Toggle + Menu */}
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="w-10 h-10 flex items-center justify-center rounded-lg border border-[var(--glass-border)] text-[var(--gold)] bg-[var(--bg-200)] shadow-sm"
+            >
+              {mobileOpen ? "✕" : "☰"}
+            </button>
+            <Link
+              href="/contact"
+              className="hidden sm:flex px-5 py-2 text-sm font-dm font-medium rounded-lg border border-[var(--glass-border)] hover:bg-[var(--gold-subtle)] transition-colors duration-200 bg-[var(--bg-200)]"
+              style={{ color: "var(--gold)" }}
+            >
+              تواصل
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -188,18 +188,19 @@ export default function Header() {
             >
               ✕
             </button>
-            <nav className="flex flex-col items-center gap-8">
+            <nav className="flex flex-col items-center gap-6 py-10 px-6 rounded-2xl border border-[var(--glass-border)] bg-[var(--bg-100)] shadow-2xl min-w-[280px]">
               {navLinks.map((link, i) => (
                 <motion.div
                   key={link.href}
-                  initial={{ opacity: 0, y: 15 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
+                  className="w-full text-center"
                 >
                   <Link
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
-                    className="font-playfair text-4xl font-bold transition-colors"
+                    className="font-playfair text-3xl font-bold transition-colors block py-2 hover:text-[var(--gold)]"
                     style={{ color: pathname === link.href ? "var(--gold)" : "var(--text)" }}
                   >
                     {link.label}
