@@ -8,22 +8,33 @@ export default function WorksPage() {
   const [projects, setProjects]     = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [active, setActive]         = useState("all");
+  const [loading, setLoading]       = useState(true);
 
   useEffect(() => {
-    fetch("/api/projects")
-      .then(r => r.ok ? r.json() : [])
-      .then(data => setProjects(Array.isArray(data) ? data : []))
-      .catch(() => setProjects([]));
-      
-    fetch("/api/categories")
-      .then(r => r.ok ? r.json() : [])
-      .then(data => setCategories(Array.isArray(data) ? data : []))
-      .catch(() => setCategories([]));
+    const loadData = async () => {
+      try {
+        const [projectsRes, categoriesRes] = await Promise.all([
+          fetch("/api/projects"),
+          fetch("/api/categories")
+        ]);
+        
+        const projectsData = projectsRes.ok ? await projectsRes.json() : [];
+        const categoriesData = categoriesRes.ok ? await categoriesRes.json() : [];
+        
+        setProjects(Array.isArray(projectsData) ? projectsData : []);
+        setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+      } catch (error) {
+        console.error("Failed to load data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
   }, []);
 
   const filtered = active === "all" 
-    ? (Array.isArray(projects) ? projects : []) 
-    : (Array.isArray(projects) ? projects : []).filter((p:any) => p?.category?.slug === active);
+    ? projects 
+    : projects.filter((p:any) => p?.category?.slug === active || p?.categoryId === active);
 
   return (
     <>
@@ -43,8 +54,8 @@ export default function WorksPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-wrap gap-2">
             <button onClick={()=>setActive("all")} className={`filter-tab ${active==="all"?"active":""}`}>الكل</button>
-            {(categories || []).map((c:any)=>(
-              <button key={c.id} onClick={()=>setActive(c.slug)} className={`filter-tab ${active===c.slug?"active":""}`}>{c.name}</button>
+            {categories.map((c:any)=>(
+              <button key={c.id} onClick={()=>setActive(c.slug || c.id)} className={`filter-tab ${active===(c.slug || c.id)?"active":""}`}>{c.name}</button>
             ))}
           </div>
         </div>
@@ -52,93 +63,76 @@ export default function WorksPage() {
 
       <section className="pb-24">
         <div className="max-w-7xl mx-auto px-6">
-          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <AnimatePresence mode="popLayout">
-              {(filtered || []).map((project:any, i:number) => (
-                <motion.div key={project.id} layout
-                  initial={{opacity:0,scale:.9,y:30}} animate={{opacity:1,scale:1,y:0}}
-                  exit={{opacity:0,scale:.9}} transition={{duration:.45,delay:i*.05}}>
-                  <Link href={`/works/${project.slug}`} className="block group project-card">
-                    <div className="glass rounded-2xl overflow-hidden h-full transition-all duration-500 glass-hover">
-	                      <div className="h-48 relative overflow-hidden"
-	                        style={{background:`linear-gradient(135deg,${project?.color || '#1a3a5c'} 0%,var(--bg) 100%)`}}>
-	                        {project?.coverImage ? (
-	                          <img src={project.coverImage} alt={project.title}
-	                            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"/>
-	                        ) : (
-	                          <div className="absolute inset-0 flex items-center justify-center opacity-25">
-	                            <div className="space-y-2 w-4/5">
-	                              <div className="h-3 rounded-full w-3/4" style={{background:"rgba(255,255,255,0.4)"}}/>
-	                              <div className="h-2 rounded-full w-full" style={{background:"rgba(255,255,255,0.2)"}}/>
-	                              <div className="flex gap-2 mt-4">
-	                                {[.4,.2,.3].map((o,j)=>(
-	                                  <div key={j} className="h-14 flex-1 rounded-lg"
-	                                    style={{background:(project?.accent || '#4a9eff')+Math.round(o*255).toString(16).padStart(2,"0")}}/>
-	                                ))}
-	                              </div>
-	                            </div>
-	                          </div>
-	                        )}
-                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
-                          style={{background:"rgba(0,0,0,0.5)"}}>
-                          <span className="w-10 h-10 rounded-lg backdrop-blur-sm flex items-center justify-center text-white"
-                            style={{background:"rgba(255,255,255,0.15)"}}>
-                            <ExternalLink size={16}/>
-                          </span>
+          {loading ? (
+            <div className="flex justify-center py-20">
+              <div className="w-8 h-8 border-2 border-t-[var(--gold)] rounded-full animate-spin"/>
+            </div>
+          ) : (
+            <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <AnimatePresence mode="popLayout">
+                {filtered.map((project:any, i:number) => (
+                  <motion.div key={project.id || i} layout
+                    initial={{opacity:0,scale:.9,y:30}} animate={{opacity:1,scale:1,y:0}}
+                    exit={{opacity:0,scale:.9}} transition={{duration:.45,delay:i*.05}}>
+                    <Link href={`/works/${project.slug}`} className="block group project-card">
+                      <div className="glass rounded-2xl overflow-hidden h-full transition-all duration-500 glass-hover">
+                        <div className="h-48 relative overflow-hidden"
+                          style={{background:`linear-gradient(135deg,${project?.color || '#1a3a5c'} 0%,var(--bg) 100%)`}}>
+                          {project?.coverImage ? (
+                            <img src={project.coverImage} alt={project.title}
+                              className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"/>
+                          ) : (
+                            <div className="absolute inset-0 flex items-center justify-center opacity-25">
+                              <div className="space-y-2 w-4/5">
+                                <div className="h-3 rounded-full w-3/4" style={{background:"rgba(255,255,255,0.4)"}}/>
+                                <div className="h-2 rounded-full w-full" style={{background:"rgba(255,255,255,0.2)"}}/>
+                              </div>
+                            </div>
+                          )}
+                          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
+                            style={{background:"rgba(0,0,0,0.5)"}}>
+                            <span className="w-10 h-10 rounded-lg backdrop-blur-sm flex items-center justify-center text-white"
+                              style={{background:"rgba(255,255,255,0.15)"}}>
+                              <ExternalLink size={16}/>
+                            </span>
+                          </div>
+                          <div className="absolute top-4 right-4">
+                            <span className="text-xs font-dm px-3 py-1 rounded-full backdrop-blur-sm"
+                              style={{color:"rgba(255,255,255,.7)",background:"rgba(0,0,0,.4)",border:"1px solid rgba(255,255,255,.1)"}}>
+                              {project.category?.name}
+                            </span>
+                          </div>
                         </div>
-                        <div className="absolute top-4 right-4">
-                          <span className="text-xs font-dm px-3 py-1 rounded-full backdrop-blur-sm"
-                            style={{color:"rgba(255,255,255,.7)",background:"rgba(0,0,0,.4)",border:"1px solid rgba(255,255,255,.1)"}}>
-                            {project.category?.name}
-                          </span>
+                        <div className="p-6">
+                          <div className="font-dm text-xs mb-2" style={{color:"var(--text-faint)"}}>{project.year}</div>
+                          <h3 className="font-playfair text-xl mb-2 group-hover:text-[var(--gold)] transition-colors"
+                            style={{color:"var(--text)"}}>{project.title}</h3>
+                          <p className="font-dm text-sm leading-relaxed mb-4 line-clamp-2" style={{color:"var(--text-faint)"}}>
+                            {project.description}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <div className="flex flex-wrap gap-1.5">
+                              {(project.tech || []).slice(0, 3).map((t: any, idx: number) => (
+                                <span key={idx} className="text-xs font-dm px-2 py-0.5 rounded"
+                                  style={{color:"var(--text-muted)",background:"var(--bg-300)"}}>
+                                  {typeof t === "string" ? t : t.name}
+                                </span>
+                              ))}
+                            </div>
+                            <div className="flex gap-2">
+                              {project.githubUrl && <Github size={14} className="text-[var(--text-faint)]"/>}
+                              {project.liveUrl && <Globe size={14} className="text-[var(--text-faint)]"/>}
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <div className="p-6">
-                        <div className="font-dm text-xs mb-2" style={{color:"var(--text-faint)"}}>{project.year}</div>
-                        <h3 className="font-playfair text-xl mb-2 group-hover:text-[var(--gold)] transition-colors"
-                          style={{color:"var(--text)"}}>{project.title}</h3>
-                        <p className="font-dm text-sm leading-relaxed mb-4 line-clamp-2" style={{color:"var(--text-faint)"}}>
-                          {project.description}
-                        </p>
-	                        <div className="flex items-center justify-between">
-	                          <div className="flex flex-wrap gap-1.5">
-	                            {(Array.isArray(project?.tech) ? project.tech : []).slice(0, 3).map((t: any, idx: number) => {
-	                              const techName = typeof t === "string" ? t : t?.name;
-	                              if (!techName) return null;
-	                              return (
-	                                <span key={techName + idx}
-	                                  className="text-xs font-dm px-2 py-0.5 rounded"
-	                                  style={{color:"var(--text-muted)",background:"var(--bg-300)"}}>
-	                                  {techName}
-	                                </span>
-	                              );
-	                            })}
-	                          </div>
-	                          <div className="flex items-center gap-2">
-	                            {project?.githubUrl && (
-	                              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" 
-	                                onClick={(e) => e.stopPropagation()}
-	                                className="text-muted-foreground hover:text-gold transition-colors" title="Source Code">
-	                                <Github size={14} />
-	                              </a>
-	                            )}
-	                            {project?.liveUrl && (
-	                              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" 
-	                                onClick={(e) => e.stopPropagation()}
-	                                className="text-muted-foreground hover:text-gold transition-colors" title="Live Demo">
-	                                <Globe size={14} />
-	                              </a>
-	                            )}
-	                          </div>
-	                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </motion.div>
-          {filtered.length === 0 && (
+                    </Link>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          )}
+          {!loading && filtered.length === 0 && (
             <div className="text-center py-24 font-dm" style={{color:"var(--text-faint)"}}>لا توجد مشاريع في هذا القسم</div>
           )}
         </div>
