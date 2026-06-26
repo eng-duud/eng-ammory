@@ -6,13 +6,16 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, ExternalLink, ChevronDown } from "lucide-react";
 import AnimatedCounter from "./components/AnimatedCounter";
 
-const KeyboardUniverse = dynamic(() => import("./components/KeyboardUniverse"), { ssr: false });
+const KeyboardUniverse = dynamic(() => import("./components/KeyboardUniverse"), { 
+  ssr: false,
+  loading: () => <div className="fixed inset-0 bg-[var(--bg)]" />
+});
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
+  hidden: { opacity: 0, y: 20 }, // Reduced y offset
   visible: (i = 0) => ({
     opacity: 1, y: 0,
-    transition: { duration: 0.8, delay: i * 0.15, ease: [0.16,1,0.3,1] as [number,number,number,number] },
+    transition: { duration: 0.6, delay: i * 0.1, ease: "easeOut" }, // Faster animations
   }),
 };
 
@@ -23,10 +26,26 @@ export default function Home() {
   const [skills, setSkills]     = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("/api/settings").then(r=>r.ok?r.json():{}).then(setSettings);
-    fetch("/api/projects?featured=true").then(r=>r.ok?r.json():[]).then(setProjects);
-    fetch("/api/skills").then(r=>r.ok?r.json():[]).then(setSkills);
-    fetch("/api/stats").then(r=>r.ok?r.json():[]).then(setStats);
+    // Parallel fetching for better performance
+    const fetchData = async () => {
+      try {
+        const [sRes, pRes, skRes, stRes] = await Promise.all([
+          fetch("/api/settings"),
+          fetch("/api/projects?featured=true"),
+          fetch("/api/skills"),
+          fetch("/api/stats")
+        ]);
+        
+        if (sRes.ok) setSettings(await sRes.json());
+        if (pRes.ok) setProjects(await pRes.json());
+        if (skRes.ok) setSkills(await skRes.json());
+        if (stRes.ok) setStats(await stRes.json());
+      } catch (err) {
+        console.error("Fetch error:", err);
+      }
+    };
+    
+    fetchData();
   }, []);
 
   return (
@@ -40,32 +59,32 @@ export default function Home() {
             style={{ background:"radial-gradient(circle, var(--gold-subtle) 0%, transparent 70%)" }}/>
         </div>
         <div className="max-w-7xl mx-auto px-6 pt-32 pb-20 relative z-10">
-          <motion.div initial={{opacity:0,scale:.8}} animate={{opacity:1,scale:1}} transition={{duration:.6}}
+          <motion.div initial={{opacity:0,scale:.9}} animate={{opacity:1,scale:1}} transition={{duration:.4}}
             className="inline-flex items-center gap-2 mb-10">
             <div className="glow-dot"/>
             <span className="text-sm font-dm tracking-widest uppercase" style={{color:"var(--gold)"}}>متاح للمشاريع الجديدة</span>
           </motion.div>
 
           <div className="overflow-hidden mb-4">
-            <motion.h1 initial={{y:"100%"}} animate={{y:0}} transition={{duration:1,ease:[0.16,1,0.3,1]}}
+            <motion.h1 initial={{y:40, opacity:0}} animate={{y:0, opacity:1}} transition={{duration:0.8, ease:"easeOut"}}
               className="display-xl leading-none" style={{color:"var(--text)"}}>
               {settings.name?.split(" ").slice(0,2).join(" ") || "عمرو خالد"}
             </motion.h1>
           </div>
           <div className="overflow-hidden mb-8">
-            <motion.h1 initial={{y:"100%"}} animate={{y:0}} transition={{duration:1,delay:.1,ease:[0.16,1,0.3,1]}}
+            <motion.h1 initial={{y:40, opacity:0}} animate={{y:0, opacity:1}} transition={{duration:0.8, delay:.1, ease:"easeOut"}}
               className="display-xl gold-shimmer leading-none">
               {settings.name?.split(" ").slice(2).join(" ") || "الجمل"}
             </motion.h1>
           </div>
 
-          <motion.p custom={3} variants={fadeUp} initial="hidden" animate="visible"
+          <motion.p custom={2} variants={fadeUp} initial="hidden" animate="visible"
             className="text-lg md:text-xl font-dm max-w-xl leading-relaxed mb-12" style={{color:"var(--text-muted)"}}>
             {settings.title || "مطور أنظمة ومواقع بدقة عالية"}
             <br/><span style={{color:"var(--gold)"}}>أبني تجارب رقمية استثنائية.</span>
           </motion.p>
 
-          <motion.div custom={4} variants={fadeUp} initial="hidden" animate="visible" className="flex flex-wrap gap-4">
+          <motion.div custom={3} variants={fadeUp} initial="hidden" animate="visible" className="flex flex-wrap gap-4">
             <Link href="/works"
               className="group relative px-8 py-4 font-dm font-semibold rounded-lg overflow-hidden transition-all duration-300"
               style={{background:"var(--gold)",color:"var(--bg)"}}>
@@ -80,7 +99,7 @@ export default function Home() {
             </Link>
           </motion.div>
         </div>
-        <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:2.2}}
+        <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:1.5}}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
           style={{color:"var(--text-faint)"}}>
           <span className="text-xs font-dm tracking-widest uppercase">اكتشف</span>
@@ -96,8 +115,8 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               {stats.map((s:any,i:number)=>(
-                <motion.div key={s.id} initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}}
-                  viewport={{once:true}} transition={{delay:i*.1}} className="text-center">
+                <motion.div key={s.id} initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}}
+                  viewport={{once:true}} transition={{delay:i*.05}} className="text-center">
                   <div className="display-md gold-text mb-2">
                     <AnimatedCounter value={s.value} suffix={s.suffix}/>
                   </div>
@@ -112,7 +131,7 @@ export default function Home() {
       {/* ── Featured Projects ───────────────────── */}
       <section className="section-pad">
         <div className="max-w-7xl mx-auto px-6">
-          <motion.div initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}}
+          <motion.div initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}}
             className="flex items-end justify-between mb-16">
             <div>
               <p className="text-xs font-dm uppercase tracking-widest mb-3" style={{color:"var(--gold)"}}>أبرز المشاريع</p>
@@ -126,8 +145,8 @@ export default function Home() {
 
           <div className="space-y-5">
             {projects.map((project:any,i:number)=>(
-              <motion.div key={project.id} initial={{opacity:0,y:50}} whileInView={{opacity:1,y:0}}
-                viewport={{once:true}} transition={{delay:i*.15,duration:.8}}>
+              <motion.div key={project.id} initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}}
+                viewport={{once:true}} transition={{delay:i*.1,duration:.6}}>
                 <Link href={`/works/${project.slug}`}>
                   <div className="group glass glass-hover rounded-2xl p-8 md:p-10 relative overflow-hidden cursor-pointer">
                     <div className="absolute top-0 right-0 w-72 h-72 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
@@ -174,15 +193,15 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {skills.flatMap((group: any) => group.skills || []).map((skill: any, i: number) => (
-              <motion.div key={skill.id} initial={{opacity:0,scale:.9}} whileInView={{opacity:1,scale:1}}
-                viewport={{once:true}} transition={{delay:i*.05}}
+              <motion.div key={skill.id} initial={{opacity:0,scale:.95}} whileInView={{opacity:1,scale:1}}
+                viewport={{once:true}} transition={{delay:i*.03}}
                 className="glass p-6 rounded-2xl text-center group transition-all duration-300">
                 <div className="font-dm text-sm font-medium mb-1 group-hover:text-[var(--gold)] transition-colors"
                   style={{color:"var(--text)"}}>{skill.name}</div>
                 <div className="text-[10px] font-dm uppercase tracking-tighter" style={{color:"var(--text-faint)"}}>{skill.level}%</div>
                 <div className="mt-3 h-1 w-full bg-white/5 rounded-full overflow-hidden">
                   <motion.div initial={{width:0}} whileInView={{width:`${skill.level}%`}}
-                    viewport={{once:true}} transition={{duration:1,delay:i*.05}}
+                    viewport={{once:true}} transition={{duration:0.8,delay:i*.03}}
                     className="h-full" style={{background:"var(--gold)"}}/>
                 </div>
               </motion.div>

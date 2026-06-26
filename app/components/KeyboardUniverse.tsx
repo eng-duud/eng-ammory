@@ -86,12 +86,18 @@ export default function KeyboardUniverse() {
     const camera   = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 0, 30);
 
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    const renderer = new THREE.WebGLRenderer({ 
+      canvas, 
+      alpha: true, 
+      antialias: false, // Disabled antialias for performance
+      powerPreference: "high-performance" 
+    });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(1); // Locked pixel ratio to 1 for performance
     renderer.setClearColor(0x000000, 0);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
+    
+    // Performance optimization: disable shadow map
+    renderer.shadowMap.enabled = false;
 
     /* ── Lights ─────────────────────────────────────────────── */
     const p0 = PALETTES[themeRef.current];
@@ -118,19 +124,18 @@ export default function KeyboardUniverse() {
       "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P",
       "Q","R","S","T","U","V","W","X","Y","Z",
       "1","2","3","4","5","6","7","8","9","0",
-      "⌘","⇧","⌥","⌃","↵","⌫","⇥","␣",
-      "</>","{ }","[ ]","( )","=>","&&","||","!=",
     ];
 
     const createKey = () => {
       const g = new THREE.Group();
       const p = PALETTES[themeRef.current];
 
-      const bodyMat = new THREE.MeshPhysicalMaterial({
+      // Using StandardMaterial instead of PhysicalMaterial for performance
+      const bodyMat = new THREE.MeshStandardMaterial({
         color: p.keyBody, metalness: p.metalness, roughness: p.roughness,
         transparent: true, opacity: 0.88,
       });
-      const topMat = new THREE.MeshPhysicalMaterial({
+      const topMat = new THREE.MeshStandardMaterial({
         color: p.keyTop, metalness: p.metalness, roughness: p.roughness,
         transparent: true, opacity: 0.92,
       });
@@ -138,6 +143,7 @@ export default function KeyboardUniverse() {
         color: 0xC9A96E, transparent: true, opacity: p.edgeAlpha,
       });
 
+      // @ts-ignore - mapping materials for theme updates
       matsRef.current.push({ body: bodyMat, top: topMat, edge: edgeMat });
 
       const body = new THREE.Mesh(new THREE.BoxGeometry(2.2, 2.2, 0.5), bodyMat);
@@ -147,12 +153,12 @@ export default function KeyboardUniverse() {
       top.position.z = 0.3;
       g.add(top);
 
-      if (Math.random() > 0.6) {
+      if (Math.random() > 0.7) { // Reduced edge frequency
         const edge = new THREE.Mesh(new THREE.BoxGeometry(2.28, 2.28, 0.54), edgeMat);
         g.add(edge);
       }
 
-      const spread = 38, depthSpread = 22;
+      const spread = 40, depthSpread = 20;
       g.position.set(
         (Math.random() - 0.5) * spread,
         (Math.random() - 0.5) * spread,
@@ -173,7 +179,7 @@ export default function KeyboardUniverse() {
       return g;
     };
 
-    const COUNT = Math.min(58, keyLabels.length);
+    const COUNT = 35; // Reduced from 58 to 35 for performance
     const keys: THREE.Group[] = [];
     const vel: { x: number; y: number; z: number }[] = [];
     for (let i = 0; i < COUNT; i++) {
@@ -248,7 +254,6 @@ export default function KeyboardUniverse() {
         k.scale.setScalar(0.55 + depth * 0.45);
       });
 
-      const p = PALETTES[themeRef.current];
       if (lightsRef.current) {
         lightsRef.current.gold.position.x = 12 + Math.sin(time * 0.4) * 4;
         lightsRef.current.gold.position.y = 12 + Math.cos(time * 0.3) * 3;

@@ -1,11 +1,25 @@
 import prisma from "@/app/lib/db";
 import Link from "next/link";
+import { Github, Globe, ExternalLink } from "lucide-react";
 
 export const dynamic = 'force-dynamic';
 
-export default async function WorksPage() {
+export default async function WorksPage({
+  searchParams,
+}: {
+  searchParams: { category?: string };
+}) {
+  const categorySlug = searchParams.category;
+
   const projects = await prisma.project.findMany({
-    where: { hidden: false },
+    where: { 
+      hidden: false,
+      ...(categorySlug ? {
+        category: {
+          slug: categorySlug
+        }
+      } : {})
+    },
     include: { category: true, tech: true },
     orderBy: { order: 'asc' },
   }).catch(() => []);
@@ -24,15 +38,26 @@ export default async function WorksPage() {
 
         <div className="flex flex-wrap gap-2 mb-12">
           <Link href="/works" 
-            className="px-6 py-2 rounded-full text-sm transition-all bg-[var(--gold)] text-[var(--bg)]">
+            className={`px-6 py-2 rounded-full text-sm transition-all border ${
+              !categorySlug 
+                ? "bg-[var(--gold)] text-[var(--bg)] border-[var(--gold)]" 
+                : "bg-[var(--bg-200)] text-[var(--text-muted)] border-[var(--glass-border)]"
+            }`}>
             الكل
           </Link>
-          {categories.map((c: any) => (
-            <Link key={c.id} href={`/works?category=${c.slug || c.id}`}
-              className="px-6 py-2 rounded-full text-sm transition-all bg-[var(--bg-200)] text-[var(--text-muted)] border border-[var(--glass-border)]">
-              {c.name}
-            </Link>
-          ))}
+          {categories.map((c: any) => {
+            const isActive = categorySlug === c.slug;
+            return (
+              <Link key={c.id} href={`/works?category=${c.slug}`}
+                className={`px-6 py-2 rounded-full text-sm transition-all border ${
+                  isActive 
+                    ? "bg-[var(--gold)] text-[var(--bg)] border-[var(--gold)]" 
+                    : "bg-[var(--bg-200)] text-[var(--text-muted)] border-[var(--glass-border)]"
+                }`}>
+                {c.name}
+              </Link>
+            );
+          })}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -65,6 +90,9 @@ export default async function WorksPage() {
                         </span>
                       ))}
                     </div>
+                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                       <ExternalLink size={16} className="text-[var(--gold)]" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -73,7 +101,7 @@ export default async function WorksPage() {
         </div>
 
         {projects.length === 0 && (
-          <div className="text-center py-24 text-[var(--text-faint)]">لا توجد مشاريع حالياً</div>
+          <div className="text-center py-24 text-[var(--text-faint)]">لا توجد مشاريع حالياً في هذا القسم</div>
         )}
       </div>
     </div>

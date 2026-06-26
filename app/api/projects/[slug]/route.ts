@@ -3,8 +3,14 @@ import prisma from "@/app/lib/db";
 
 export async function GET(_: Request, { params }: { params: { slug: string } }) {
   try {
+    const { slug } = params;
+    
+    if (!slug) {
+      return NextResponse.json({ error: "Slug is required" }, { status: 400 });
+    }
+
     const project = await prisma.project.findUnique({
-      where: { slug: params.slug },
+      where: { slug },
       include: {
         category: true,
         tech: true,
@@ -14,9 +20,16 @@ export async function GET(_: Request, { params }: { params: { slug: string } }) 
       },
     });
     
-    if (!project) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (!project) {
+      return NextResponse.json({ error: "Project not found" }, { status: 404 });
+    }
+    
     return NextResponse.json(project);
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("API Error [Project Detail]:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error", message: error.message }, 
+      { status: 500 }
+    );
   }
 }

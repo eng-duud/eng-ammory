@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ExternalLink, Globe, ChevronLeft, Github } from "lucide-react";
 
 export default function ProjectDetailPage() {
   const params = useParams();
@@ -66,9 +65,9 @@ export default function ProjectDetailPage() {
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="flex items-center gap-2 text-sm font-dm mb-10" style={{color:"var(--text-faint)"}}>
             <Link href="/" className="hover:text-[var(--gold)] transition-colors">الرئيسية</Link>
-            <ChevronLeft size={14}/>
+            <span className="mx-2">/</span>
             <Link href="/works" className="hover:text-[var(--gold)] transition-colors">الأعمال</Link>
-            <ChevronLeft size={14}/>
+            <span className="mx-2">/</span>
             <span style={{color:"var(--gold)"}}>{project.title || "مشروع"}</span>
           </div>
 
@@ -87,14 +86,14 @@ export default function ProjectDetailPage() {
                 {project.liveUrl && project.liveUrl !== "#" && (
                   <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-2 px-6 py-3 font-dm font-semibold rounded-lg transition-all bg-[var(--gold)] text-[var(--bg)]">
-                    <ExternalLink size={15}/> المشروع الحي
+                    المشروع الحي
                   </a>
                 )}
                 {project.githubUrl && project.githubUrl !== "#" && (
                   <a href={project.githubUrl} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-2 px-6 py-3 font-dm rounded-lg transition-all border border-[var(--glass-border)]"
                     style={{color:"var(--gold)"}}>
-                    <Github size={15}/> الكود المصدري
+                    الكود المصدري
                   </a>
                 )}
               </div>
