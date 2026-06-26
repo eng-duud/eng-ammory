@@ -103,36 +103,24 @@ export default function Header() {
           ${scrolled ? "py-3 border-b border-[var(--glass-border)]" : "py-5"}
         `}
       >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between flex-row-reverse">
-          {/* Right: Profile Image + Name */}
-          <Link href="/" className="group flex items-center gap-3 flex-row-reverse">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center relative overflow-hidden transition-all duration-300 border border-[var(--glass-border)]"
-            >
-              {profileImage ? (
-                <img 
-                  src={profileImage} 
-                  alt="Profile" 
-                  className="w-full h-full object-cover"
-                  loading="eager"
-                />
-              ) : (
-                <div
-                  className="absolute inset-0"
-                  style={{ background: "linear-gradient(135deg, var(--gold-subtle), transparent)" }}
-                />
-              )}
-            </div>
-            <div className="text-right">
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+          {/* Left: Profile Image + Name */}
+          <Link href="/" className="group flex items-center gap-3">
+            {profileImage && (
+              <div className="w-10 h-10 rounded-full overflow-hidden border border-[var(--glass-border)] transition-transform hover:scale-105">
+                <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+              </div>
+            )}
+            <div>
               <div
-                className="font-playfair font-semibold text-sm leading-tight"
+                className="font-playfair font-semibold text-lg leading-tight text-left"
                 style={{ color: "var(--text)" }}
               >عمرو الجمل</div>
-              <div className="text-xs font-dm" style={{ color: "var(--gold)" }}>Developer</div>
+              <div className="text-xs font-dm text-[var(--gold)] text-left">Developer</div>
             </div>
           </Link>
 
-          {/* Center: Desktop Navigation (Optional, keeping it for desktop experience) */}
+          {/* Center: Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map(link => (
               <Link
@@ -153,15 +141,8 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Left: Theme Toggle + Menu */}
+          {/* Right: Theme Toggle + Menu Button */}
           <div className="flex items-center gap-3">
-            <ThemeToggle />
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="w-10 h-10 flex items-center justify-center rounded-lg border border-[var(--glass-border)] text-[var(--gold)] bg-[var(--bg-200)] shadow-sm"
-            >
-              {mobileOpen ? "✕" : "☰"}
-            </button>
             <Link
               href="/contact"
               className="hidden sm:flex px-5 py-2 text-sm font-dm font-medium rounded-lg border border-[var(--glass-border)] hover:bg-[var(--gold-subtle)] transition-colors duration-200 bg-[var(--bg-200)]"
@@ -169,6 +150,13 @@ export default function Header() {
             >
               تواصل
             </Link>
+            <ThemeToggle />
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="w-10 h-10 flex items-center justify-center rounded-lg border border-[var(--glass-border)] text-[var(--gold)] bg-[var(--bg-200)] shadow-sm"
+            >
+              {mobileOpen ? "✕" : "☰"}
+            </button>
           </div>
         </div>
       </header>
