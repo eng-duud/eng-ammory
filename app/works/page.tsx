@@ -10,8 +10,8 @@ export default function WorksPage() {
   const [active, setActive]         = useState("all");
 
   useEffect(() => {
-    fetch("/api/projects").then(r=>r.json()).then(setProjects);
-    fetch("/api/categories").then(r=>r.json()).then(setCategories);
+    fetch("/api/projects").then(r=>r.json()).then(data => setProjects(Array.isArray(data) ? data : []));
+    fetch("/api/categories").then(r=>r.json()).then(data => setCategories(Array.isArray(data) ? data : []));
   }, []);
 
   const filtered = active === "all" ? projects : projects.filter((p:any) => p.category?.slug === active);
@@ -34,7 +34,7 @@ export default function WorksPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-wrap gap-2">
             <button onClick={()=>setActive("all")} className={`filter-tab ${active==="all"?"active":""}`}>الكل</button>
-            {categories.map((c:any)=>(
+            {(categories || []).map((c:any)=>(
               <button key={c.id} onClick={()=>setActive(c.slug)} className={`filter-tab ${active===c.slug?"active":""}`}>{c.name}</button>
             ))}
           </div>
@@ -45,7 +45,7 @@ export default function WorksPage() {
         <div className="max-w-7xl mx-auto px-6">
           <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <AnimatePresence mode="popLayout">
-              {filtered.map((project:any, i:number) => (
+              {(filtered || []).map((project:any, i:number) => (
                 <motion.div key={project.id} layout
                   initial={{opacity:0,scale:.9,y:30}} animate={{opacity:1,scale:1,y:0}}
                   exit={{opacity:0,scale:.9}} transition={{duration:.45,delay:i*.05}}>
@@ -54,7 +54,7 @@ export default function WorksPage() {
                       <div className="h-48 relative overflow-hidden"
                         style={{background:`linear-gradient(135deg,${project.color} 0%,var(--bg) 100%)`}}>
                         {project.coverImage ? (
-57	                          <img src={project.coverImage} alt={project.title}
+                          <img src={project.coverImage} alt={project.title}
                             className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"/>
                         ) : (
                           <div className="absolute inset-0 flex items-center justify-center opacity-25">

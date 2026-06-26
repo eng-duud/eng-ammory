@@ -11,10 +11,10 @@ export default function AboutPage() {
   const [experiences, setExperiences] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("/api/settings").then(r=>r.json()).then(setSettings);
-    fetch("/api/stats").then(r=>r.json()).then(setStats);
-    fetch("/api/skills").then(r=>r.json()).then(setSkills);
-    fetch("/api/experiences").then(r=>r.json()).then(setExperiences);
+    fetch("/api/settings").then(r=>r.json()).then(data => setSettings(data || {}));
+    fetch("/api/stats").then(r=>r.json()).then(data => setStats(Array.isArray(data) ? data : []));
+    fetch("/api/skills").then(r=>r.json()).then(data => setSkills(Array.isArray(data) ? data : []));
+    fetch("/api/experiences").then(r=>r.json()).then(data => setExperiences(Array.isArray(data) ? data : []));
   },[]);
 
   return (
@@ -44,7 +44,7 @@ export default function AboutPage() {
                     <div className="text-center">
                       <div className="font-playfair text-[120px] leading-none select-none"
                         style={{color:"var(--gold-subtle)"}}>ع</div>
-                      <div className="font-dm text-sm" style={{color:"var(--text-faint)"}}>{settings.name}</div>
+                      <div className="font-dm text-sm" style={{color:"var(--text-faint)"}}>{settings?.name}</div>
                     </div>
                   </div>
                   <div className="absolute inset-0 pointer-events-none"
@@ -54,8 +54,8 @@ export default function AboutPage() {
               </div>
               <div className="space-y-3 mb-8">
                 {[
-                  {icon:MapPin,  text:settings.location||""},
-                  {icon:Mail,    text:settings.email||""},
+                  {icon:MapPin,  text:settings?.location||""},
+                  {icon:Mail,    text:settings?.email||""},
                   {icon:Calendar,text:"6+ سنوات من الخبرة"},
                 ].map(({icon:Icon,text})=>text?(
                   <div key={text} className="flex items-center gap-3 text-sm font-dm" style={{color:"var(--text-muted)"}}>
@@ -73,11 +73,11 @@ export default function AboutPage() {
             <motion.div initial={{opacity:0,x:40}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:.8}}>
               <div className="space-y-5 font-dm leading-relaxed mb-10" style={{color:"var(--text-muted)"}}>
                 <p className="text-lg" style={{color:"var(--text)"}}>
-                  أنا <strong style={{color:"var(--text)"}}>{settings.name}</strong>، {settings.title}.
+                  أنا <strong style={{color:"var(--text)"}}>{settings?.name}</strong>، {settings?.title}.
                 </p>
-                <p>{settings.bio||"مطور متكامل يجمع بين الدقة التقنية والإبداع البصري."}</p>
+                <p>{settings?.bio||"مطور متكامل يجمع بين الدقة التقنية والإبداع البصري."}</p>
               </div>
-              {stats.length>0 && (
+              {(stats || []).length>0 && (
                 <div className="grid grid-cols-2 gap-4">
                   {stats.map((s:any,i:number)=>(
                     <motion.div key={s.id} initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}}
@@ -96,7 +96,7 @@ export default function AboutPage() {
       </section>
 
       {/* Experience Timeline */}
-      {experiences.length>0 && (
+      {(experiences || []).length>0 && (
         <section className="section-pad bg-alt">
           <div className="max-w-7xl mx-auto px-6">
             <motion.div initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} className="mb-14">
@@ -133,7 +133,7 @@ export default function AboutPage() {
       )}
 
       {/* Skills */}
-      {skills.length>0 && (
+      {(skills || []).length>0 && (
         <section className="section-pad">
           <div className="max-w-7xl mx-auto px-6">
             <motion.div initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} className="text-center mb-14">
