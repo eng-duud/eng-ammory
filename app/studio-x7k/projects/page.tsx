@@ -6,26 +6,55 @@ import { Plus, Pencil, Trash2, Eye, EyeOff, Star, GripVertical } from "lucide-re
 export default function AdminProjects() {
   const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState<string|null>(null);
 
-  const load = () => {
-    fetch("/api/admin/projects").then(r=>r.json()).then(d=>{setProjects(Array.isArray(d)?d:[]);setLoading(false);});
+  const load = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/projects");
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+      const d = await res.json();
+      setProjects(Array.isArray(d) ? d : []);
+    } catch (err: any) {
+      console.error("Load Projects Error:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
-  useEffect(()=>load(),[]);
+
+  useEffect(() => { load(); }, []);
 
   const toggle = async (id:string, field:"hidden"|"featured", val:boolean) => {
     const proj = projects.find(p=>p.id===id);
     if (!proj) return;
-    await fetch(`/api/admin/projects/${id}`,{
-      method:"PUT",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({...proj,tech:(proj.tech||[]).map((t:any)=>typeof t==="string"?t:t.name),[field]:val})
-    });
-    load();
+    try {
+      const res = await fetch(`/api/admin/projects/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...proj,
+          tech: (proj.tech || []).map((t: any) => typeof t === "string" ? t : t.name),
+          [field]: val
+        })
+      });
+      if (!res.ok) throw new Error("Failed to update");
+      load();
+    } catch (err: any) {
+      alert(err.message);
+    }
   };
 
   const del = async (id:string) => {
     if (!confirm("حذف هذا المشروع نهائياً؟")) return;
-    await fetch(`/api/admin/projects/${id}`,{method:"DELETE"});
-    load();
+    try {
+      const res = await fetch(`/api/admin/projects/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete");
+      load();
+    } catch (err: any) {
+      alert(err.message);
+    }
   };
 
   return (
@@ -46,13 +75,17 @@ export default function AdminProjects() {
         <div className="flex justify-center py-20">
           <div className="w-8 h-8 border-2 rounded-full animate-spin" style={{borderColor:"var(--bg-300)",borderTopColor:"var(--gold)"}}/>
         </div>
+      ) : error ? (
+        <div className="text-center py-20">
+          <p className="text-red-500 mb-4">خطأ في جلب البيانات: {error}</p>
+          <button onClick={load} className="text-sm font-dm underline" style={{color:"var(--gold)"}}>إعادة المحاولة</button>
+        </div>
       ) : (
         <div className="space-y-3">
           {projects.map(p=>(
             <div key={p.id} className="glass rounded-xl p-5 flex items-center gap-4">
               <GripVertical size={16} style={{color:"var(--text-faint)"}} className="cursor-grab flex-shrink-0"/>
 
-              {/* Color dot */}
               <div className="w-10 h-10 rounded-lg flex-shrink-0 relative overflow-hidden"
                 style={{background:`linear-gradient(135deg,${p.color},${p.accent})`}}>
                 {p.cover_image && <img src={p.cover_image} alt="" className="w-full h-full object-cover absolute inset-0"/>}
@@ -67,24 +100,16 @@ export default function AdminProjects() {
                 <div className="flex items-center gap-3 mt-1">
                   <span className="font-dm text-xs" style={{color:"var(--text-faint)"}}>{p.category_name}</span>
                   {p.year && <span className="font-dm text-xs" style={{color:"var(--text-faint)"}}>{p.year}</span>}
-                  <div className="flex gap-1">
-                    {(p.tech||[]).slice(0,3).map((t:any)=>(
-                      <span key={typeof t==="string"?t:t.name} className="text-xs font-dm px-1.5 py-0.5 rounded"
-                        style={{background:"var(--bg-300)",color:"var(--text-faint)"}}>
-                        {typeof t==="string"?t:t.name}
-                      </span>
-                    ))}
-                  </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 flex-shrink-0">
-                <button onClick={()=>toggle(p.id,"featured",!p.featured)} title={p.featured?"إلغاء التمييز":"تمييز"}
+                <button onClick={()=>toggle(p.id,"featured",!p.featured)}
                   className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
                   style={{background:"var(--bg-200)",color:p.featured?"var(--gold)":"var(--text-faint)"}}>
                   <Star size={14} fill={p.featured?"var(--gold)":"none"}/>
                 </button>
-                <button onClick={()=>toggle(p.id,"hidden",!p.hidden)} title={p.hidden?"إظهار":"إخفاء"}
+                <button onClick={()=>toggle(p.id,"hidden",!p.hidden)}
                   className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
                   style={{background:"var(--bg-200)",color:"var(--text-faint)"}}>
                   {p.hidden ? <Eye size={14}/> : <EyeOff size={14}/>}

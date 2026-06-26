@@ -6,44 +6,72 @@ export default function AdminSkills() {
   const [groups, setGroups]   = useState<any[]>([]);
   const [skills, setSkills]   = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState<string|null>(null);
   const [editingSkill, setEditingSkill] = useState<any>(null);
   const [newSkillName, setNewSkillName] = useState("");
   const [newSkillLevel, setNewSkillLevel] = useState(80);
   const [selectedGroup, setSelectedGroup] = useState("");
 
-  const load = () => {
-    fetch("/api/admin/skills").then(r=>r.json()).then(d=>{
-      setGroups(d.groups||[]);
-      setSkills(d.skills||[]);
+  const load = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/skills");
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+      const d = await res.json();
+      setGroups(d.groups || []);
+      setSkills(d.skills || []);
+    } catch (err: any) {
+      console.error("Load Skills Error:", err);
+      setError(err.message);
+    } finally {
       setLoading(false);
-    });
+    }
   };
-  useEffect(()=>load(),[]);
+
+  useEffect(() => { load(); }, []);
 
   const addSkill = async () => {
     if(!newSkillName||!selectedGroup) return;
-    await fetch("/api/admin/skills",{
-      method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({name:newSkillName,level:newSkillLevel,groupId:selectedGroup})
-    });
-    setNewSkillName("");
-    load();
+    try {
+      const res = await fetch("/api/admin/skills", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: newSkillName, level: newSkillLevel, groupId: selectedGroup })
+      });
+      if (!res.ok) throw new Error("Failed to add skill");
+      setNewSkillName("");
+      load();
+    } catch (err: any) {
+      alert(err.message);
+    }
   };
 
   const updateSkill = async () => {
     if(!editingSkill) return;
-    await fetch(`/api/admin/skills/${editingSkill.id}`,{
-      method:"PUT",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(editingSkill)
-    });
-    setEditingSkill(null);
-    load();
+    try {
+      const res = await fetch(`/api/admin/skills/${editingSkill.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editingSkill)
+      });
+      if (!res.ok) throw new Error("Failed to update skill");
+      setEditingSkill(null);
+      load();
+    } catch (err: any) {
+      alert(err.message);
+    }
   };
 
   const delSkill = async (id:string) => {
     if(!confirm("حذف هذه المهارة؟")) return;
-    await fetch(`/api/admin/skills/${id}`,{method:"DELETE"});
-    load();
+    try {
+      const res = await fetch(`/api/admin/skills/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete skill");
+      load();
+    } catch (err: any) {
+      alert(err.message);
+    }
   };
 
   return (
@@ -56,6 +84,11 @@ export default function AdminSkills() {
       {loading ? (
         <div className="flex justify-center py-20">
           <div className="w-8 h-8 border-2 rounded-full animate-spin" style={{borderColor:"var(--bg-300)",borderTopColor:"var(--gold)"}}/>
+        </div>
+      ) : error ? (
+        <div className="text-center py-20">
+          <p className="text-red-500 mb-4">خطأ في جلب المهارات: {error}</p>
+          <button onClick={load} className="text-sm font-dm underline" style={{color:"var(--gold)"}}>إعادة المحاولة</button>
         </div>
       ) : (
         <div className="space-y-8">

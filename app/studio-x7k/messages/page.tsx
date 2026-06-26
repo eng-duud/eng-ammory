@@ -5,26 +5,49 @@ import { Mail, Trash2, Eye, EyeOff } from "lucide-react";
 export default function AdminMessages() {
   const [messages, setMessages] = useState<any[]>([]);
   const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState<string|null>(null);
 
-  const load = () => {
-    fetch("/api/admin/messages").then(r=>r.json()).then(d=>{
-      setMessages(Array.isArray(d)?d:[]);
+  const load = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/messages");
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+      const d = await res.json();
+      setMessages(Array.isArray(d) ? d : []);
+    } catch (err: any) {
+      console.error("Load Messages Error:", err);
+      setError(err.message);
+    } finally {
       setLoading(false);
-    });
+    }
   };
-  useEffect(()=>load(),[]);
+
+  useEffect(() => { load(); }, []);
 
   const toggleRead = async (id:string, read:boolean) => {
-    await fetch(`/api/admin/messages/${id}`,{
-      method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({read:!read})
-    });
-    load();
+    try {
+      const res = await fetch(`/api/admin/messages/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ read: !read })
+      });
+      if (!res.ok) throw new Error("Failed to update");
+      load();
+    } catch (err: any) {
+      alert(err.message);
+    }
   };
 
   const del = async (id:string) => {
     if(!confirm("حذف هذه الرسالة؟")) return;
-    await fetch(`/api/admin/messages/${id}`,{method:"DELETE"});
-    load();
+    try {
+      const res = await fetch(`/api/admin/messages/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete");
+      load();
+    } catch (err: any) {
+      alert(err.message);
+    }
   };
 
   const unread = messages.filter(m=>!m.read).length;
@@ -41,6 +64,11 @@ export default function AdminMessages() {
       {loading ? (
         <div className="flex justify-center py-20">
           <div className="w-8 h-8 border-2 rounded-full animate-spin" style={{borderColor:"var(--bg-300)",borderTopColor:"var(--gold)"}}/>
+        </div>
+      ) : error ? (
+        <div className="text-center py-20">
+          <p className="text-red-500 mb-4">خطأ في جلب الرسائل: {error}</p>
+          <button onClick={load} className="text-sm font-dm underline" style={{color:"var(--gold)"}}>إعادة المحاولة</button>
         </div>
       ) : (
         <div className="space-y-3">
