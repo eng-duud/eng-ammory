@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Download, MapPin, Mail, Calendar } from "lucide-react";
 import AnimatedCounter from "../components/AnimatedCounter";
 
 export default function AboutPage() {
@@ -36,7 +35,7 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
             <motion.div initial={{opacity:0,x:-40}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:.8}}>
-              <div className="relative w-full max-w-sm mb-10 mx-auto lg:mx-0">
+              <div className="relative w-full max-sm mb-10 mx-auto lg:mx-0">
                 <div className="aspect-square rounded-2xl overflow-hidden glass border relative"
                   style={{borderColor:"var(--glass-border)"}}>
                   {settings?.profileImage ? (
@@ -57,26 +56,32 @@ export default function AboutPage() {
                 <div className="absolute -bottom-3 -right-3 w-24 h-24 rounded-xl -z-10 border" style={{borderColor:"var(--glass-border)"}}/>
               </div>
               <div className="space-y-3 mb-8">
-                {[
-                  {icon:MapPin,  text:settings?.location||""},
-                  {icon:Mail,    text:settings?.email||""},
-                  {icon:Calendar,text:"6+ سنوات من الخبرة"},
-                ].map(({icon:Icon,text})=>text?(
-                  <div key={text} className="flex items-center gap-3 text-sm font-dm" style={{color:"var(--text-muted)"}}>
-                    <Icon size={14} style={{color:"var(--gold)"}}/>
-                    <span>{text}</span>
+                {settings?.location && (
+                  <div className="flex items-center gap-3 text-sm font-dm" style={{color:"var(--text-muted)"}}>
+                    <span style={{color:"var(--gold)"}}>•</span>
+                    <span>{settings.location}</span>
                   </div>
-                ):null)}
+                )}
+                {settings?.email && (
+                  <div className="flex items-center gap-3 text-sm font-dm" style={{color:"var(--text-muted)"}}>
+                    <span style={{color:"var(--gold)"}}>•</span>
+                    <span>{settings.email}</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-3 text-sm font-dm" style={{color:"var(--text-muted)"}}>
+                  <span style={{color:"var(--gold)"}}>•</span>
+                  <span>6+ سنوات من الخبرة</span>
+                </div>
               </div>
               {settings?.cvUrl ? (
                 <a href="/api/download-cv" download className="inline-flex items-center gap-2 px-6 py-3 text-sm font-dm rounded-lg transition-all hover:opacity-80"
-                  style={{border:"1px solid var(--glass-border)",color:"var(--gold)"}}>
-                  <Download size={15}/> تحميل السيرة الذاتية
+                  style={{border:"1px solid var(--glass-border)", color:"var(--gold)"}}>
+                  تحميل السيرة الذاتية
                 </a>
               ) : (
                 <button disabled className="inline-flex items-center gap-2 px-6 py-3 text-sm font-dm rounded-lg transition-all opacity-50 cursor-not-allowed"
-                  style={{border:"1px solid var(--glass-border)",color:"var(--gold)"}}>
-                  <Download size={15}/> السيرة الذاتية غير متوفرة
+                  style={{border:"1px solid var(--glass-border)", color:"var(--gold)"}}>
+                  السيرة الذاتية غير متوفرة
                 </button>
               )}
             </motion.div>

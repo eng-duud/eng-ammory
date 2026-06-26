@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Globe, Globe2, Mail, Heart } from "lucide-react";
 import { siteData } from "../data";
 
 export default function Footer() {
@@ -22,32 +21,20 @@ export default function Footer() {
             </p>
             <div className="flex gap-3">
               {[
-                { icon: Globe,    href: siteData.social.github,              label: "GitHub"   },
-                { icon: Globe2,   href: siteData.social.linkedin,            label: "LinkedIn" },
-                { icon: Mail,     href: siteData.social.twitter,             label: "Twitter"  },
-                { icon: Mail,     href: `mailto:${siteData.email}`,          label: "Email"    },
-              ].map(({ icon: Icon, href, label }) => (
+                { href: siteData.social.github,              label: "GitHub"   },
+                { href: siteData.social.linkedin,            label: "LinkedIn" },
+                { href: siteData.social.twitter,             label: "Twitter"  },
+                { href: `mailto:${siteData.email}`,          label: "Email"    },
+              ].map(({ href, label }) => (
                 <a
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300"
-                  style={{
-                    border: "1px solid var(--glass-border)",
-                    color: "var(--text-faint)",
-                  }}
-                  onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.color = "var(--gold)";
-                    (e.currentTarget as HTMLElement).style.borderColor = "var(--gold)";
-                  }}
-                  onMouseLeave={e => {
-                    (e.currentTarget as HTMLElement).style.color = "var(--text-faint)";
-                    (e.currentTarget as HTMLElement).style.borderColor = "var(--glass-border)";
-                  }}
+                  className="w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300 border border-[var(--glass-border)] text-[var(--text-faint)] hover:text-[var(--gold)] hover:border-[var(--gold)]"
                 >
-                  <Icon size={15} />
+                  <span className="text-[10px] font-bold">{label.charAt(0)}</span>
                 </a>
               ))}
             </div>
@@ -95,7 +82,7 @@ export default function Footer() {
             © {new Date().getFullYear()} عمرو خالد الجمل — جميع الحقوق محفوظة
           </p>
           <p className="text-xs font-dm flex items-center gap-1.5" style={{ color: "var(--text-faint)" }}>
-            صُنع بـ <Heart size={11} style={{ color: "var(--gold)" }} fill="var(--gold)" /> وشغف حقيقي
+            صُنع بـ <span style={{ color: "var(--gold)" }}>❤</span> وشغف حقيقي
           </p>
         </div>
       </div>

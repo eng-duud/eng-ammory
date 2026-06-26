@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, CheckCircle, Mail, Phone, MapPin } from "lucide-react";
 
 export default function ContactPage() {
   const [settings, setSettings] = useState<any>({});
@@ -52,14 +51,14 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
             <motion.div initial={{opacity:0,x:-30}} whileInView={{opacity:1,x:0}} viewport={{once:true}} className="lg:col-span-2 space-y-4">
               {[
-                {icon:Mail,  label:"البريد الإلكتروني", value:settings.email,    href:`mailto:${settings.email}`},
-                {icon:Phone, label:"الهاتف / واتساب",   value:settings.phone,    href:`tel:${settings.phone}`},
-                {icon:MapPin,label:"الموقع",             value:settings.location, href:"#"},
-              ].filter(x=>x.value).map(({icon:Icon,label,value,href})=>(
+                {label:"البريد الإلكتروني", value:settings.email,    href:`mailto:${settings.email}`},
+                {label:"الهاتف / واتساب",   value:settings.phone,    href:`tel:${settings.phone}`},
+                {label:"الموقع",             value:settings.location, href:"#"},
+              ].filter(x=>x.value).map(({label,value,href})=>(
                 <a key={label} href={href} className="flex items-start gap-4 glass glass-hover rounded-xl p-5">
                   <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
                     style={{border:"1px solid var(--glass-border)",color:"var(--text-faint)"}}>
-                    <Icon size={16}/>
+                    <span style={{color:"var(--gold)"}}>•</span>
                   </div>
                   <div>
                     <div className="font-dm text-xs mb-1" style={{color:"var(--text-faint)"}}>{label}</div>
@@ -84,10 +83,9 @@ export default function ContactPage() {
                   {state==="success" ? (
                     <motion.div key="ok" initial={{opacity:0,scale:.9}} animate={{opacity:1,scale:1}}
                       className="flex flex-col items-center justify-center py-16 text-center">
-                      <motion.div initial={{scale:0}} animate={{scale:1}}
-                        transition={{type:"spring",stiffness:200,damping:15,delay:.15}}>
-                        <CheckCircle size={64} style={{color:"var(--gold)"}} className="mb-6"/>
-                      </motion.div>
+                      <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6" style={{border:"2px solid var(--gold)", color:"var(--gold)"}}>
+                        <span className="text-3xl">✓</span>
+                      </div>
                       <h3 className="font-playfair text-2xl mb-3" style={{color:"var(--text)"}}>تم الإرسال!</h3>
                       <p className="font-dm text-sm mb-8" style={{color:"var(--text-muted)"}}>شكراً لتواصلك. سأرد في أقرب وقت.</p>
                       <button onClick={()=>{setState("idle");setForm({name:"",email:"",subject:"",message:""}); }}
@@ -135,7 +133,7 @@ export default function ContactPage() {
                           {state==="loading" ? (
                             <><div className="w-4 h-4 border-2 rounded-full animate-spin"
                               style={{borderColor:"rgba(0,0,0,.3)",borderTopColor:"var(--bg)"}}/> جاري الإرسال...</>
-                          ) : <><Send size={16}/> إرسال الرسالة</>}
+                          ) : "إرسال الرسالة"}
                         </button>
                       </div>
                     </motion.div>

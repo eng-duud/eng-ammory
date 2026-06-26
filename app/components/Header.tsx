@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Sun, Moon } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 
 const navLinks = [
@@ -45,19 +44,11 @@ function ThemeToggle() {
         animate={{ width: "22px", x: isDark ? 0 : 24 }}
         initial={false}
       />
-      <span className="absolute left-[5px] top-1/2 -translate-y-1/2 pointer-events-none">
-        <Moon
-          size={12}
-          className="transition-opacity duration-300"
-          style={{ color: isDark ? "#0d0d0d" : "#b0a088", opacity: isDark ? 1 : 0 }}
-        />
+      <span className="absolute left-[5px] top-1/2 -translate-y-1/2 pointer-events-none text-[10px]" style={{ color: isDark ? "#0d0d0d" : "#b0a088", opacity: isDark ? 1 : 0 }}>
+        🌙
       </span>
-      <span className="absolute right-[5px] top-1/2 -translate-y-1/2 pointer-events-none">
-        <Sun
-          size={12}
-          className="transition-opacity duration-300"
-          style={{ color: isDark ? "#c9a96e" : "#8C6A32", opacity: isDark ? 0 : 1 }}
-        />
+      <span className="absolute right-[5px] top-1/2 -translate-y-1/2 pointer-events-none text-[10px]" style={{ color: isDark ? "#c9a96e" : "#8C6A32", opacity: isDark ? 0 : 1 }}>
+        ☀️
       </span>
     </button>
   );
@@ -176,10 +167,9 @@ export default function Header() {
             <ThemeToggle />
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="w-10 h-10 flex items-center justify-center rounded-lg border border-[var(--glass-border)]"
-              style={{ color: "var(--gold)" }}
+              className="w-10 h-10 flex items-center justify-center rounded-lg border border-[var(--glass-border)] text-[var(--gold)]"
             >
-              {mobileOpen ? <X size={18} /> : <Menu size={18} />}
+              {mobileOpen ? "✕" : "☰"}
             </button>
           </div>
         </div>
@@ -196,10 +186,9 @@ export default function Header() {
           >
             <button
               onClick={() => setMobileOpen(false)}
-              className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-lg border border-[var(--glass-border)]"
-              style={{ color: "var(--gold)" }}
+              className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-lg border border-[var(--glass-border)] text-[var(--gold)]"
             >
-              <X size={18} />
+              ✕
             </button>
             <nav className="flex flex-col items-center gap-8">
               {navLinks.map((link, i) => (
