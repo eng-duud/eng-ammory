@@ -1,21 +1,15 @@
 "use client";
-import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowLeft, ExternalLink, ChevronDown } from "lucide-react";
 import AnimatedCounter from "./components/AnimatedCounter";
 
-const KeyboardUniverse = dynamic(() => import("./components/KeyboardUniverse"), { 
-  ssr: false,
-  loading: () => <div className="fixed inset-0 bg-[var(--bg)]" />
-});
-
 const fadeUp = {
-  hidden: { opacity: 0, y: 20 }, // Reduced y offset
+  hidden: { opacity: 0, y: 20 },
   visible: (i = 0) => ({
     opacity: 1, y: 0,
-    transition: { duration: 0.6, delay: i * 0.1, ease: "easeOut" }, // Faster animations
+    transition: { duration: 0.6, delay: i * 0.1, ease: "easeOut" },
   }),
 };
 
@@ -26,7 +20,6 @@ export default function Home() {
   const [skills, setSkills]     = useState<any[]>([]);
 
   useEffect(() => {
-    // Parallel fetching for better performance
     const fetchData = async () => {
       try {
         const [sRes, pRes, skRes, stRes] = await Promise.all([
@@ -50,8 +43,6 @@ export default function Home() {
 
   return (
     <>
-      <KeyboardUniverse />
-
       {/* ── Hero ───────────────────────────────── */}
       <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">

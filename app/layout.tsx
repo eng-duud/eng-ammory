@@ -3,6 +3,12 @@ import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { ThemeProvider } from "./components/ThemeProvider";
+import dynamic from "next/dynamic";
+
+const KeyboardUniverse = dynamic(() => import("./components/KeyboardUniverse"), { 
+  ssr: false,
+  loading: () => <div className="fixed inset-0 bg-[var(--bg)]" />
+});
 
 export const metadata: Metadata = {
   title: "عمرو خالد الجمل — مطور أنظمة ومواقع",
@@ -28,8 +34,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="antialiased">
         <ThemeProvider>
+          <KeyboardUniverse />
           <Header />
-          <main className="content-layer">{children}</main>
+          <main className="content-layer relative z-10">{children}</main>
           <Footer />
         </ThemeProvider>
       </body>

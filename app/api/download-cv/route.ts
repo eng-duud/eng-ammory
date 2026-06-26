@@ -12,7 +12,7 @@ export async function GET() {
       return NextResponse.json({ error: "CV not found" }, { status: 404 });
     }
 
-    // Fetch the file from Cloudinary
+    // Fetch the file from the remote storage (Cloudinary)
     const response = await fetch(cvUrl);
     if (!response.ok) {
       return NextResponse.json({ error: "Failed to fetch CV" }, { status: 500 });
@@ -20,24 +20,27 @@ export async function GET() {
 
     const buffer = await response.arrayBuffer();
     
-    // Determine filename from URL or use default
-    let filename = "CV.pdf";
+    // Attempt to extract a clean filename from the Cloudinary URL
+    // Cloudinary URLs usually look like: .../upload/v12345/folder/filename.pdf
+    let filename = "CV_Amro_Aljamal.pdf";
     try {
-      const url = new URL(cvUrl);
-      const pathname = url.pathname;
-      const parts = pathname.split("/");
-      const lastPart = parts[parts.length - 1];
-      if (lastPart) {
+      const urlParts = cvUrl.split('/');
+      const lastPart = urlParts[urlParts.length - 1];
+      if (lastPart && lastPart.includes('.')) {
+        // If it's a direct file link with extension
         filename = decodeURIComponent(lastPart);
+      } else if (lastPart) {
+        // If it's a public ID without extension, append .pdf as default
+        filename = `${decodeURIComponent(lastPart)}.pdf`;
       }
     } catch (e) {
-      // Use default filename if URL parsing fails
+      // Fallback to default
     }
 
     // Return the file with proper headers for direct download
     return new NextResponse(buffer, {
       headers: {
-        "Content-Type": "application/pdf", // Set correct type for PDF
+        "Content-Type": response.headers.get("Content-Type") || "application/pdf",
         "Content-Disposition": `attachment; filename="${filename}"`,
         "Cache-Control": "no-cache, no-store, must-revalidate",
       },
