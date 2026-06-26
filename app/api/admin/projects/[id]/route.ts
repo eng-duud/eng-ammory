@@ -15,14 +15,31 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   const guard = await requireAdmin(); if (guard) return guard;
   const b = await req.json();
+  // Convert camelCase to snake_case for database columns
+  const projectData = {
+    title: b.title,
+    title_en: b.titleEn || null,
+    description: b.description,
+    description_long: b.descriptionLong || null,
+    category_id: b.categoryId,
+    live_url: b.liveUrl || null,
+    github_url: b.githubUrl || null,
+    featured: b.featured ?? false,
+    hidden: b.hidden ?? false,
+    order: b.order ?? 0,
+    color: b.color || '#1a3a5c',
+    accent: b.accent || '#4a9eff',
+    year: b.year || null,
+    cover_image: b.coverImage || null,
+  };
   const [proj] = await sql`
     UPDATE projects SET
-      title=${b.title}, title_en=${b.titleEn||null}, description=${b.description},
-      description_long=${b.descriptionLong||null}, category_id=${b.categoryId},
-      live_url=${b.liveUrl||null}, github_url=${b.githubUrl||null},
-      featured=${b.featured??false}, hidden=${b.hidden??false},
-      "order"=${b.order??0}, color=${b.color||'#1a3a5c'}, accent=${b.accent||'#4a9eff'},
-      year=${b.year||null}, cover_image=${b.coverImage||null}
+      title=${projectData.title}, title_en=${projectData.title_en}, description=${projectData.description},
+      description_long=${projectData.description_long}, category_id=${projectData.category_id},
+      live_url=${projectData.live_url}, github_url=${projectData.github_url},
+      featured=${projectData.featured}, hidden=${projectData.hidden},
+      "order"=${projectData.order}, color=${projectData.color}, accent=${projectData.accent},
+      year=${projectData.year}, cover_image=${projectData.cover_image}
     WHERE id=${params.id} RETURNING *`;
   if (b.tech) {
     await sql`DELETE FROM project_tech WHERE project_id=${params.id}`;
