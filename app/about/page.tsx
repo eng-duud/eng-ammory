@@ -39,14 +39,18 @@ export default function AboutPage() {
               <div className="relative w-full max-w-sm mb-10 mx-auto lg:mx-0">
                 <div className="aspect-square rounded-2xl overflow-hidden glass border relative"
                   style={{borderColor:"var(--glass-border)"}}>
-                  <div className="w-full h-full flex items-center justify-center"
-                    style={{background:"linear-gradient(135deg,var(--bg-200),var(--bg))"}}>
-                    <div className="text-center">
-                      <div className="font-playfair text-[120px] leading-none select-none"
-                        style={{color:"var(--gold-subtle)"}}>ع</div>
-                      <div className="font-dm text-sm" style={{color:"var(--text-faint)"}}>{settings?.name}</div>
+                  {settings?.profileImage ? (
+                    <img src={settings.profileImage} alt={settings?.name} className="w-full h-full object-cover"/>
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center"
+                      style={{background:"linear-gradient(135deg,var(--bg-200),var(--bg))"}}>
+                      <div className="text-center">
+                        <div className="font-playfair text-[120px] leading-none select-none"
+                          style={{color:"var(--gold-subtle)"}}>ع</div>
+                        <div className="font-dm text-sm" style={{color:"var(--text-faint)"}}>{settings?.name}</div>
+                      </div>
                     </div>
-                  </div>
+                  )}
                   <div className="absolute inset-0 pointer-events-none"
                     style={{background:"radial-gradient(circle at 30% 30%,var(--gold-subtle),transparent 60%)"}}/>
                 </div>

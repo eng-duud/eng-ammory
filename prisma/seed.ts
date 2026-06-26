@@ -173,6 +173,7 @@ async function main() {
     { key: 'linkedin', value: '#' },
     { key: 'twitter', value: '#' },
     { key: 'whatsapp', value: '#' },
+    { key: 'profileImage', value: '' },
   ];
 
   for (const setting of settingsData) {

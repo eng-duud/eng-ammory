@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Save, Loader } from "lucide-react";
+import { Save, Loader, ImagePlus, X } from "lucide-react";
 
 export default function AdminSettings() {
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [loading, setLoading]   = useState(true);
   const [saving, setSaving]     = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => {
     fetch("/api/settings").then(r=>r.json()).then(d=>{setSettings(d||{});setLoading(false);});
@@ -23,6 +24,25 @@ export default function AdminSettings() {
     {key:"twitter",  label:"رابط Twitter"},
     {key:"whatsapp", label:"رابط WhatsApp"},
   ];
+
+  const uploadToCloudinary = async (file: File): Promise<string> => {
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!);
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, { method:"POST", body:fd });
+    const data = await res.json();
+    return data.secure_url;
+  };
+
+  const handleProfileImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]; if (!file) return;
+    setUploadingImage(true);
+    try { 
+      const url = await uploadToCloudinary(file); 
+      setSettings(s=>({...s,profileImage:url})); 
+    }
+    finally { setUploadingImage(false); }
+  };
 
   const save = async () => {
     setSaving(true);
@@ -47,6 +67,30 @@ export default function AdminSettings() {
         </div>
       ) : (
         <div className="max-w-2xl space-y-6">
+          {/* Profile Image Section */}
+          <div className="glass rounded-2xl p-6">
+            <h2 className="font-playfair text-xl mb-6" style={{color:"var(--text)"}}>الصورة الشخصية</h2>
+            <div className="space-y-4">
+              {settings.profileImage ? (
+                <div className="relative w-full max-w-xs">
+                  <img src={settings.profileImage} alt="Profile" className="w-full aspect-square object-cover rounded-xl"/>
+                  <button onClick={()=>setSettings(s=>({...s,profileImage:""}))}
+                    className="absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center"
+                    style={{background:"rgba(0,0,0,0.7)",color:"white"}}>
+                    <X size={14}/>
+                  </button>
+                </div>
+              ) : (
+                <label className="flex flex-col items-center justify-center w-full max-w-xs aspect-square rounded-xl border-2 border-dashed cursor-pointer transition-colors"
+                  style={{borderColor:"var(--glass-border)",color:"var(--text-faint)"}}>
+                  {uploadingImage ? <Loader size={32} className="animate-spin"/> : <><ImagePlus size={40} className="mb-2"/><span className="font-dm text-sm">اضغط لرفع الصورة</span></>}
+                  <input type="file" accept="image/*" className="hidden" onChange={handleProfileImageUpload} disabled={uploadingImage}/>
+                </label>
+              )}
+            </div>
+          </div>
+
+          {/* Profile Information Section */}
           <div className="glass rounded-2xl p-6">
             <h2 className="font-playfair text-xl mb-6" style={{color:"var(--text)"}}>معلومات الملف الشخصي</h2>
             <div className="space-y-4">

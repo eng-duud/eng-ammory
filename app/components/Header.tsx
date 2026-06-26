@@ -69,6 +69,7 @@ function ThemeToggle() {
 export default function Header() {
   const [scrolled,    setScrolled]    = useState(false);
   const [mobileOpen,  setMobileOpen]  = useState(false);
+  const [profileImage, setProfileImage] = useState("");
   const pathname = usePathname();
   const { theme }  = useTheme();
   const isDark = theme === "dark";
@@ -77,6 +78,14 @@ export default function Header() {
     const fn = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", fn);
     return () => window.removeEventListener("scroll", fn);
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then(r => r.json())
+      .then(d => {
+        if (d?.profileImage) setProfileImage(d.profileImage);
+      });
   }, []);
 
   const headerBg = scrolled
@@ -109,14 +118,24 @@ export default function Header() {
               className="w-10 h-10 rounded-lg flex items-center justify-center relative overflow-hidden transition-all duration-300"
               style={{ border: "1px solid var(--glass-border)" }}
             >
-              <div
-                className="absolute inset-0"
-                style={{ background: "linear-gradient(135deg, var(--gold-subtle), transparent)" }}
-              />
-              <span
-                className="font-playfair font-bold text-lg relative z-10"
-                style={{ color: "var(--gold)" }}
-              >ع</span>
+              {profileImage ? (
+                <img 
+                  src={profileImage} 
+                  alt="Profile" 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <>
+                  <div
+                    className="absolute inset-0"
+                    style={{ background: "linear-gradient(135deg, var(--gold-subtle), transparent)" }}
+                  />
+                  <span
+                    className="font-playfair font-bold text-lg relative z-10"
+                    style={{ color: "var(--gold)" }}
+                  >ع</span>
+                </>
+              )}
             </div>
             <div>
               <div
