@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { ExternalLink, Github, Globe } from "lucide-react";
 
@@ -31,7 +30,7 @@ export default function WorksPage() {
   const filtered = (projects || []).filter(p => {
     if (!p) return false;
     if (active === "all") return true;
-    return p.category?.slug === active || p.categoryId === active;
+    return p.category?.slug === active || p.categoryId === active || p.category?.id === active;
   });
 
   return (
@@ -62,7 +61,7 @@ export default function WorksPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filtered.map((p:any) => (
-              <motion.div key={p.id} initial={{opacity:0,y:20}} animate={{opacity:1,y:0}}>
+              <div key={p.id} className="opacity-100 transform-none">
                 <Link href={`/works/${p.slug || p.id}`} className="group block h-full">
                   <div className="bg-[var(--bg-200)] border border-[var(--glass-border)] rounded-2xl overflow-hidden h-full transition-all hover:translate-y-[-4px]">
                     <div className="h-48 relative overflow-hidden bg-[var(--bg-300)]">
@@ -94,7 +93,7 @@ export default function WorksPage() {
                     </div>
                   </div>
                 </Link>
-              </motion.div>
+              </div>
             ))}
           </div>
         )}

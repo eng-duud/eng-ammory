@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { ExternalLink, Globe, ChevronLeft, Github } from "lucide-react";
 
@@ -74,7 +73,7 @@ export default function ProjectDetailPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.6}}>
+            <div className="opacity-100 transform-none">
               <div className="flex items-center gap-3 mb-6">
                 <span className="text-xs font-dm uppercase tracking-widest border px-3 py-1 rounded-full"
                   style={{color:"var(--gold)",borderColor:"var(--glass-border)"}}>{project.category?.name || "مشروع"}</span>
@@ -99,9 +98,9 @@ export default function ProjectDetailPage() {
                   </a>
                 )}
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div initial={{opacity:0, scale:0.95}} animate={{opacity:1, scale:1}} transition={{duration:0.6}}>
+            <div className="opacity-100 transform-none">
               <div className="aspect-video rounded-2xl relative overflow-hidden border border-[var(--glass-border)] bg-[var(--bg-200)]">
                 {project.coverImage ? (
                   <img src={project.coverImage} alt={project.title} className="w-full h-full object-cover"/>
@@ -111,7 +110,7 @@ export default function ProjectDetailPage() {
                   </div>
                 )}
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
