@@ -11,7 +11,6 @@ export default function AdminSettings() {
 
   const loadSettings = async () => {
     try {
-      // Fetch from admin API to ensure we get the latest even if public is cached
       const r = await fetch("/api/admin/settings");
       const d = await r.json();
       if (r.ok) setSettings(d || {});
@@ -57,6 +56,28 @@ export default function AdminSettings() {
     return data.secure_url;
   };
 
+  const deleteOldCVFromCloudinary = async (cvUrl: string) => {
+    try {
+      if (!cvUrl) return;
+      
+      // Extract public_id from Cloudinary URL
+      // URL format: https://res.cloudinary.com/cloud_name/raw/upload/v123456/public_id.ext
+      const urlParts = cvUrl.split("/");
+      const fileWithExt = urlParts[urlParts.length - 1];
+      const publicId = fileWithExt.split(".")[0];
+      
+      if (publicId) {
+        await fetch("/api/delete-cloudinary-file", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ publicId }),
+        });
+      }
+    } catch (e) {
+      console.error("Failed to delete old CV:", e);
+    }
+  };
+
   const handleProfileImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return;
     setUploadingImage(true);
@@ -78,6 +99,11 @@ export default function AdminSettings() {
     }
     setUploadingCV(true);
     try { 
+      // Delete old CV first if it exists
+      if (settings.cvUrl) {
+        await deleteOldCVFromCloudinary(settings.cvUrl);
+      }
+      
       const url = await uploadFileToCloudinary(file); 
       setSettings(s=>({...s,cvUrl:url})); 
     } catch (e) {
@@ -98,7 +124,6 @@ export default function AdminSettings() {
       if (!res.ok) throw new Error("Failed to save");
       
       alert("تم الحفظ بنجاح!");
-      // Re-load settings from server to ensure state is in sync
       await loadSettings();
     } catch (e) { 
       alert("حدث خطأ أثناء الحفظ!"); 
@@ -156,7 +181,10 @@ export default function AdminSettings() {
                       <p className="font-dm text-xs" style={{color:"var(--text-faint)"}}>تم الرفع بنجاح</p>
                     </div>
                   </div>
-                  <button onClick={()=>setSettings(s=>({...s,cvUrl:""}))}
+                  <button onClick={async ()=>{
+                    await deleteOldCVFromCloudinary(settings.cvUrl);
+                    setSettings(s=>({...s,cvUrl:""}));
+                  }}
                     className="w-7 h-7 rounded-full flex items-center justify-center"
                     style={{background:"rgba(0,0,0,0.7)",color:"white"}}>
                     <X size={14}/>
