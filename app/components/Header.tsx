@@ -104,33 +104,21 @@ export default function Header() {
         `}
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          <Link href="/" className="group flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-lg flex items-center justify-center relative overflow-hidden transition-all duration-300"
-              style={{ border: "1px solid var(--glass-border)" }}
-            >
-              {profileImage ? (
-                <img 
-                  src={profileImage} 
-                  alt="Profile" 
-                  className="w-full h-full object-cover"
-                  loading="eager"
-                />
-              ) : (
-                <div
-                  className="absolute inset-0"
-                  style={{ background: "linear-gradient(135deg, var(--gold-subtle), transparent)" }}
-                />
-              )}
-            </div>
-            <div>
-              <div
-                className="font-playfair font-semibold text-sm leading-tight"
-                style={{ color: "var(--text)" }}
-              >عمرو الجمل</div>
-              <div className="text-xs font-dm" style={{ color: "var(--gold)" }}>Developer</div>
-            </div>
-          </Link>
+	          <Link href="/" className="group flex items-center gap-3">
+	            <div
+	              className="w-10 h-10 rounded-lg flex items-center justify-center relative overflow-hidden transition-all duration-300"
+	              style={{ border: "1px solid var(--glass-border)", background: "linear-gradient(135deg, var(--gold-subtle), transparent)" }}
+	            >
+	              <span className="text-sm font-bold text-[var(--gold)]">A</span>
+	            </div>
+	            <div>
+	              <div
+	                className="font-playfair font-semibold text-sm leading-tight"
+	                style={{ color: "var(--text)" }}
+	              >عمرو الجمل</div>
+	              <div className="text-xs font-dm" style={{ color: "var(--gold)" }}>Developer</div>
+	            </div>
+	          </Link>
 
           <nav className="hidden md:flex items-center gap-1">
             {navLinks.map(link => (
@@ -152,26 +140,36 @@ export default function Header() {
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center gap-4">
-            <ThemeToggle />
-            <Link
-              href="/contact"
-              className="px-5 py-2 text-sm font-dm font-medium rounded-lg border border-[var(--glass-border)] hover:bg-[var(--gold-subtle)] transition-colors duration-200"
-              style={{ color: "var(--gold)" }}
-            >
-              للتواصل
-            </Link>
-          </div>
+	          <div className="hidden md:flex items-center gap-4">
+	            {profileImage && (
+	              <div className="w-10 h-10 rounded-full overflow-hidden border border-[var(--glass-border)]">
+	                <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+	              </div>
+	            )}
+	            <ThemeToggle />
+	            <Link
+	              href="/contact"
+	              className="px-5 py-2 text-sm font-dm font-medium rounded-lg border border-[var(--glass-border)] hover:bg-[var(--gold-subtle)] transition-colors duration-200"
+	              style={{ color: "var(--gold)" }}
+	            >
+	              للتواصل
+	            </Link>
+	          </div>
 
-          <div className="md:hidden flex items-center gap-3">
-            <ThemeToggle />
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="w-10 h-10 flex items-center justify-center rounded-lg border border-[var(--glass-border)] text-[var(--gold)]"
-            >
-              {mobileOpen ? "✕" : "☰"}
-            </button>
-          </div>
+	          <div className="md:hidden flex items-center gap-3">
+	            {profileImage && (
+	              <div className="w-10 h-10 rounded-full overflow-hidden border border-[var(--glass-border)]">
+	                <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+	              </div>
+	            )}
+	            <ThemeToggle />
+	            <button
+	              onClick={() => setMobileOpen(!mobileOpen)}
+	              className="w-10 h-10 flex items-center justify-center rounded-lg border border-[var(--glass-border)] text-[var(--gold)]"
+	            >
+	              {mobileOpen ? "✕" : "☰"}
+	            </button>
+	          </div>
         </div>
       </header>
 
