@@ -21,7 +21,9 @@ export default function WorksPage() {
       .catch(() => setCategories([]));
   }, []);
 
-  const filtered = active === "all" ? projects : projects.filter((p:any) => p.category?.slug === active);
+  const filtered = active === "all" 
+    ? (Array.isArray(projects) ? projects : []) 
+    : (Array.isArray(projects) ? projects : []).filter((p:any) => p?.category?.slug === active);
 
   return (
     <>
@@ -100,13 +102,17 @@ export default function WorksPage() {
                         </p>
 	                        <div className="flex items-center justify-between">
 	                          <div className="flex flex-wrap gap-1.5">
-	                            {(Array.isArray(project?.tech) ? project.tech : []).slice(0, 3).map((t: any, idx: number) => (
-	                              <span key={typeof t === "string" ? t : (t?.name || idx)}
-	                                className="text-xs font-dm px-2 py-0.5 rounded"
-	                                style={{color:"var(--text-muted)",background:"var(--bg-300)"}}>
-	                                {typeof t === "string" ? t : t?.name}
-	                              </span>
-	                            ))}
+	                            {(Array.isArray(project?.tech) ? project.tech : []).slice(0, 3).map((t: any, idx: number) => {
+	                              const techName = typeof t === "string" ? t : t?.name;
+	                              if (!techName) return null;
+	                              return (
+	                                <span key={techName + idx}
+	                                  className="text-xs font-dm px-2 py-0.5 rounded"
+	                                  style={{color:"var(--text-muted)",background:"var(--bg-300)"}}>
+	                                  {techName}
+	                                </span>
+	                              );
+	                            })}
 	                          </div>
 	                          <div className="flex items-center gap-2">
 	                            {project?.githubUrl && (

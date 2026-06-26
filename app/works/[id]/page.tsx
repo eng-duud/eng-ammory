@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ExternalLink, Globe, ChevronLeft } from "lucide-react";
+import { ExternalLink, Globe, ChevronLeft, Github } from "lucide-react";
 
 export default function ProjectDetailPage() {
   const params = useParams();
@@ -67,20 +67,20 @@ export default function ProjectDetailPage() {
 	                {project.descriptionLong || project.description_long || project.description}
 	              </p>
 	              <div className="flex flex-wrap gap-3">
-	                {(project.liveUrl || project.live_url) && (
-	                  <a href={project.liveUrl || project.live_url} target="_blank" rel="noopener noreferrer"
-	                    className="flex items-center gap-2 px-6 py-3 font-dm font-semibold rounded-lg transition-all"
-	                    style={{background:"var(--gold)",color:"var(--bg)"}}>
-	                    <ExternalLink size={15}/> المشروع الحي
-	                  </a>
-	                )}
-	                {(project.githubUrl || project.github_url) && (
-	                  <a href={project.githubUrl || project.github_url} target="_blank" rel="noopener noreferrer"
-	                    className="flex items-center gap-2 px-6 py-3 font-dm rounded-lg transition-all"
-	                    style={{border:"1px solid var(--glass-border)",color:"var(--gold)"}}>
-	                    <Github size={15}/> الكود المصدري
-	                  </a>
-	                )}
+		                {(project?.liveUrl || project?.live_url) && (project.liveUrl || project.live_url) !== "#" && (
+		                  <a href={project.liveUrl || project.live_url} target="_blank" rel="noopener noreferrer"
+		                    className="flex items-center gap-2 px-6 py-3 font-dm font-semibold rounded-lg transition-all"
+		                    style={{background:"var(--gold)",color:"var(--bg)"}}>
+		                    <ExternalLink size={15}/> المشروع الحي
+		                  </a>
+		                )}
+		                {(project?.githubUrl || project?.github_url) && (project.githubUrl || project.github_url) !== "#" && (
+		                  <a href={project.githubUrl || project.github_url} target="_blank" rel="noopener noreferrer"
+		                    className="flex items-center gap-2 px-6 py-3 font-dm rounded-lg transition-all"
+		                    style={{border:"1px solid var(--glass-border)",color:"var(--gold)"}}>
+		                    <Github size={15}/> الكود المصدري
+		                  </a>
+		                )}
 	              </div>
             </motion.div>
 

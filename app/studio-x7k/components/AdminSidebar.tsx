@@ -2,11 +2,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { LayoutDashboard, FolderOpen, Wrench, MessageSquare, Settings, LogOut, ChevronRight } from "lucide-react";
+import { LayoutDashboard, FolderOpen, Plus, Wrench, MessageSquare, Settings, LogOut, ChevronRight } from "lucide-react";
 
 const links = [
   { href:"/studio-x7k",              label:"الرئيسية",  icon:LayoutDashboard },
   { href:"/studio-x7k/projects",     label:"المشاريع",  icon:FolderOpen      },
+  { href:"/studio-x7k/projects/new", label:"إضافة مشروع", icon:Plus          },
   { href:"/studio-x7k/skills",       label:"المهارات",  icon:Wrench          },
   { href:"/studio-x7k/messages",     label:"الرسائل",   icon:MessageSquare   },
   { href:"/studio-x7k/settings",     label:"الإعدادات", icon:Settings        },
