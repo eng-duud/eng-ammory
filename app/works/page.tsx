@@ -1,6 +1,5 @@
 import prisma from "@/app/lib/db";
 import Link from "next/link";
-import { Github, Globe, ExternalLink } from "lucide-react";
 
 export const dynamic = 'force-dynamic';
 
@@ -65,10 +64,6 @@ export default async function WorksPage() {
                           {typeof t === "string" ? t : t.name}
                         </span>
                       ))}
-                    </div>
-                    <div className="flex gap-2">
-                      {p.githubUrl && <Github size={16} className="text-[var(--text-faint)]" />}
-                      {p.liveUrl && <Globe size={16} className="text-[var(--text-faint)]" />}
                     </div>
                   </div>
                 </div>
