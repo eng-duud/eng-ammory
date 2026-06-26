@@ -234,17 +234,17 @@ export default function KeyboardUniverse() {
       keys.forEach((k) => {
         if (!k.userData.isDragged) {
           const { ox, oy, oz, floatOff } = k.userData;
-          // Smooth return to original position
-          k.position.x += (ox - k.position.x) * 0.05;
-          k.position.y += (oy - k.position.y) * 0.05;
-          k.position.z += (oz - k.position.z) * 0.05;
+          // Cinematic return to original position
+          k.position.x += (ox - k.position.x) * 0.03;
+          k.position.y += (oy - k.position.y) * 0.03;
+          k.position.z += (oz - k.position.z) * 0.03;
           
-          // Subtle floating effect
-          k.position.y += Math.sin(time + floatOff) * 0.005;
+          // Ultra-subtle floating effect
+          k.position.y += Math.sin(time * 0.4 + floatOff) * 0.003;
           
-          // Subtle rotation
-          k.rotation.x = Math.sin(time * 0.5 + floatOff) * 0.1;
-          k.rotation.y = Math.cos(time * 0.5 + floatOff) * 0.1;
+          // Elegant rotation
+          k.rotation.x = Math.sin(time * 0.3 + floatOff) * 0.05;
+          k.rotation.y = Math.cos(time * 0.3 + floatOff) * 0.05;
         }
       });
 

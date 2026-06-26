@@ -57,13 +57,13 @@ export default function Home() {
           </motion.div>
 
           <div className="overflow-hidden mb-4">
-            <motion.h1 initial={{y:40, opacity:0}} animate={{y:0, opacity:1}} transition={{duration:0.8, ease:"easeOut"}}
+            <motion.h1 initial={{y:100, opacity:0}} animate={{y:0, opacity:1}} transition={{duration:1.2, ease:[0.16, 1, 0.3, 1]}}
               className="display-xl leading-none" style={{color:"var(--text)"}}>
               {settings.name?.split(" ").slice(0,2).join(" ") || "عمرو خالد"}
             </motion.h1>
           </div>
           <div className="overflow-hidden mb-8">
-            <motion.h1 initial={{y:40, opacity:0}} animate={{y:0, opacity:1}} transition={{duration:0.8, delay:.1, ease:"easeOut"}}
+            <motion.h1 initial={{y:100, opacity:0}} animate={{y:0, opacity:1}} transition={{duration:1.2, delay:.15, ease:[0.16, 1, 0.3, 1]}}
               className="display-xl gold-shimmer leading-none">
               {settings.name?.split(" ").slice(2).join(" ") || "الجمل"}
             </motion.h1>
@@ -139,10 +139,11 @@ export default function Home() {
               <motion.div key={project.id} initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}}
                 viewport={{once:true}} transition={{delay:i*.1,duration:.6}}>
                 <Link href={`/works/${project.slug}`}>
-                  <div className="group glass glass-hover rounded-2xl p-8 md:p-10 relative overflow-hidden cursor-pointer">
-                    <div className="absolute top-0 right-0 w-72 h-72 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
-                      style={{background:`radial-gradient(circle,${project.accent}20 0%,transparent 70%)`,transform:"translate(30%,-30%)"}}/>
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+                  <div className="group glass glass-hover rounded-3xl p-8 md:p-12 relative overflow-hidden cursor-pointer border border-white/5 hover:border-white/20 transition-all duration-500">
+                    <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-[var(--gold-subtle)] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"/>
+                    <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-1000 pointer-events-none blur-3xl"
+                      style={{background:`radial-gradient(circle,${project.accent || 'var(--gold)'} 0%,transparent 70%)`,transform:"translate(20%,-20%)"}}/>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 relative z-10">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-4">
                           <span className="text-xs font-dm uppercase tracking-widest border px-3 py-1 rounded-full"
@@ -186,14 +187,14 @@ export default function Home() {
             {skills.flatMap((group: any) => group.skills || []).map((skill: any, i: number) => (
               <motion.div key={skill.id} initial={{opacity:0,scale:.95}} whileInView={{opacity:1,scale:1}}
                 viewport={{once:true}} transition={{delay:i*.03}}
-                className="glass p-6 rounded-2xl text-center group transition-all duration-300">
-                <div className="font-dm text-sm font-medium mb-1 group-hover:text-[var(--gold)] transition-colors"
+                className="glass p-8 rounded-3xl text-center group transition-all duration-500 border border-white/5 hover:border-[var(--gold)]/30 hover:bg-[var(--gold-subtle)]">
+                <div className="font-dm text-sm font-semibold mb-2 group-hover:text-[var(--gold)] transition-colors"
                   style={{color:"var(--text)"}}>{skill.name}</div>
-                <div className="text-[10px] font-dm uppercase tracking-tighter" style={{color:"var(--text-faint)"}}>{skill.level}%</div>
-                <div className="mt-3 h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                <div className="text-[10px] font-dm uppercase tracking-widest opacity-50" style={{color:"var(--text)"}}>{skill.level}%</div>
+                <div className="mt-4 h-[2px] w-full bg-white/5 rounded-full overflow-hidden">
                   <motion.div initial={{width:0}} whileInView={{width:`${skill.level}%`}}
-                    viewport={{once:true}} transition={{duration:0.8,delay:i*.03}}
-                    className="h-full" style={{background:"var(--gold)"}}/>
+                    viewport={{once:true}} transition={{duration:1.2, delay:i*.05, ease:[0.16, 1, 0.3, 1]}}
+                    className="h-full shadow-[0_0_8px_var(--gold)]" style={{background:"var(--gold)"}}/>
                 </div>
               </motion.div>
             ))}

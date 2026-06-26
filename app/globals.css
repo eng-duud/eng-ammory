@@ -18,18 +18,18 @@
   --text-faint:   #444444;
   --text-ghost:   #2a2a2a;
 
-  --gold:         #C9A96E;
-  --gold-light:   #E2C898;
-  --gold-dark:    #A07840;
-  --gold-glow:    rgba(201, 169, 110, 0.35);
-  --gold-subtle:  rgba(201, 169, 110, 0.08);
+  --gold:         #D4AF37;
+  --gold-light:   #F9E4B7;
+  --gold-dark:    #996515;
+  --gold-glow:    rgba(212, 175, 55, 0.4);
+  --gold-subtle:  rgba(212, 175, 55, 0.05);
 
-  --glass-bg:     rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(201, 169, 110, 0.12);
-  --glass-hover:  rgba(201, 169, 110, 0.06);
+  --glass-bg:     rgba(255, 255, 255, 0.02);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-hover:  rgba(255, 255, 255, 0.05);
 
-  --shadow-gold:  0 0 40px rgba(201,169,110,0.25);
-  --shadow-card:  0 4px 32px rgba(0,0,0,0.6);
+  --shadow-gold:  0 0 60px rgba(212,175,55,0.15);
+  --shadow-card:  0 20px 80px rgba(0,0,0,0.8);
 
   /* 3D canvas colors */
   --key-body:     #1c1c1c;
@@ -183,8 +183,8 @@ body {
 }
 
 /* ─── SECTION PAD ─── */
-.section-pad { padding: 120px 0; }
-@media (max-width: 768px) { .section-pad { padding: 80px 0; } }
+.section-pad { padding: 160px 0; }
+@media (max-width: 768px) { .section-pad { padding: 100px 0; } }
 
 /* ─── GOLD LINE ─── */
 .gold-line {

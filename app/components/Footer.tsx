@@ -9,8 +9,8 @@ export default function Footer() {
       className="relative border-t"
       style={{ borderColor: "var(--glass-border)", background: "var(--bg)" }}
     >
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+      <div className="max-w-7xl mx-auto px-6 py-24">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-20 mb-20">
 
           {/* Brand */}
           <div>
@@ -75,8 +75,8 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div
-          className="pt-8 border-t flex flex-col md:flex-row items-center justify-between gap-4"
-          style={{ borderColor: "var(--bg-300)" }}
+          className="pt-10 border-t flex flex-col md:flex-row items-center justify-between gap-6"
+          style={{ borderColor: "rgba(255,255,255,0.05)" }}
         >
           <p className="text-xs font-dm" style={{ color: "var(--text-faint)" }}>
             © {new Date().getFullYear()} عمرو خالد الجمل — جميع الحقوق محفوظة

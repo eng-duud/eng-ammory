@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "./components/Header";
+import SmoothScroll from "./components/SmoothScroll";
 import Footer from "./components/Footer";
 import { ThemeProvider } from "./components/ThemeProvider";
 import dynamic from "next/dynamic";
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="antialiased">
         <ThemeProvider>
+          <SmoothScroll />
           <KeyboardUniverse />
           <Header />
           <main className="content-layer relative z-10 pointer-events-none"><div className="pointer-events-auto">{children}</div></main>
